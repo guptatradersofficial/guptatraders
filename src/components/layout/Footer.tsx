@@ -1,0 +1,178 @@
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
+export function Footer() {
+  return (
+    <footer className="bg-foreground text-background">
+      {/* Newsletter */}
+      <div className="border-b border-background/10">
+        <div className="container py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 className="font-display text-2xl font-semibold mb-2">
+                Join Our Newsletter
+              </h3>
+              <p className="text-background/70">
+                Get updates on new arrivals and exclusive offers
+              </p>
+            </div>
+            <form className="flex gap-2 w-full md:w-auto">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="bg-background/10 border-background/20 text-background placeholder:text-background/50 min-w-[280px]"
+              />
+              <Button variant="secondary">Subscribe</Button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Main footer */}
+      <div className="container py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          {/* Brand */}
+          <div>
+            <h4 className="font-display text-xl font-bold mb-4">Gupta Traders</h4>
+            <p className="text-background/70 mb-6">
+              Crafting beautiful spaces with quality furniture since 1985. Your trusted
+              partner for home and office furnishing.
+            </p>
+            <div className="flex gap-4">
+              <a
+                href="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <nav className="flex flex-col gap-2">
+              <Link
+                to="/products"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                All Products
+              </Link>
+              <Link
+                to="/products?category=sofas"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Sofas & Couches
+              </Link>
+              <Link
+                to="/products?category=beds"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Beds & Mattresses
+              </Link>
+              <Link
+                to="/products?category=dining"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Dining Sets
+              </Link>
+              <Link
+                to="/products?category=office"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Office Furniture
+              </Link>
+            </nav>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h4 className="font-semibold mb-4">Customer Service</h4>
+            <nav className="flex flex-col gap-2">
+              <Link
+                to="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Track Order
+              </Link>
+              <Link
+                to="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Returns & Refunds
+              </Link>
+              <Link
+                to="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Shipping Info
+              </Link>
+              <Link
+                to="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                FAQ
+              </Link>
+              <Link
+                to="#"
+                className="text-background/70 hover:text-background transition-colors"
+              >
+                Contact Us
+              </Link>
+            </nav>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="font-semibold mb-4">Contact Us</h4>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 mt-0.5 text-background/70 flex-shrink-0" />
+                <span className="text-background/70">
+                  123 Furniture Lane, Sector 45, Gurugram, Haryana 122001
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-background/70" />
+                <span className="text-background/70">+91 98765 43210</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-background/70" />
+                <span className="text-background/70">hello@guptatraders.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-background/10">
+        <div className="container py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-background/60">
+          <p>© 2024 Gupta Traders. All rights reserved.</p>
+          <div className="flex gap-6">
+            <Link to="#" className="hover:text-background transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="#" className="hover:text-background transition-colors">
+              Terms of Service
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
