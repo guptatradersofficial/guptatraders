@@ -65,6 +65,75 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_activity_logs: {
+        Row: {
+          action: string
+          admin_user_id: string
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          new_values: Json | null
+          old_values: Json | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          admin_user_id: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      admin_notifications: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string
@@ -353,6 +422,56 @@ export type Database = {
           },
         ]
       }
+      product_variants: {
+        Row: {
+          attributes: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price_modifier: number | null
+          product_id: string
+          sku: string | null
+          sort_order: number | null
+          stock_quantity: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          attributes?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price_modifier?: number | null
+          product_id: string
+          sku?: string | null
+          sort_order?: number | null
+          stock_quantity?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          attributes?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price_modifier?: number | null
+          product_id?: string
+          sku?: string | null
+          sort_order?: number | null
+          stock_quantity?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           barcode: string | null
@@ -448,6 +567,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          is_blocked: boolean | null
           phone: string | null
           updated_at: string
           user_id: string
@@ -457,6 +577,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_blocked?: boolean | null
           phone?: string | null
           updated_at?: string
           user_id: string
@@ -466,11 +587,59 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_blocked?: boolean | null
           phone?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      returns: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          order_id: string
+          reason: string
+          refund_amount: number | null
+          refund_status: string | null
+          status: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_id: string
+          reason: string
+          refund_amount?: number | null
+          refund_status?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          order_id?: string
+          reason?: string
+          refund_amount?: number | null
+          refund_status?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "returns_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -518,6 +687,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shipping_zones: {
+        Row: {
+          base_rate: number
+          created_at: string | null
+          estimated_days_max: number | null
+          estimated_days_min: number | null
+          free_shipping_threshold: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          per_kg_rate: number | null
+          regions: string[]
+          updated_at: string | null
+        }
+        Insert: {
+          base_rate?: number
+          created_at?: string | null
+          estimated_days_max?: number | null
+          estimated_days_min?: number | null
+          free_shipping_threshold?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          per_kg_rate?: number | null
+          regions?: string[]
+          updated_at?: string | null
+        }
+        Update: {
+          base_rate?: number
+          created_at?: string | null
+          estimated_days_max?: number | null
+          estimated_days_min?: number | null
+          free_shipping_threshold?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          per_kg_rate?: number | null
+          regions?: string[]
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -574,6 +785,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_admin_notification: {
+        Args: {
+          p_data?: Json
+          p_message: string
+          p_title: string
+          p_type: string
+        }
+        Returns: string
+      }
       create_order_with_items: {
         Args: {
           p_guest_email: string
@@ -591,6 +811,16 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      log_admin_activity: {
+        Args: {
+          p_action: string
+          p_entity_id?: string
+          p_entity_type: string
+          p_new_values?: Json
+          p_old_values?: Json
+        }
+        Returns: string
+      }
       validate_coupon: {
         Args: { p_code: string; p_order_subtotal: number }
         Returns: {
