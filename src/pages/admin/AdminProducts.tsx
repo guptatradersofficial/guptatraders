@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { useAdminProducts, useDeleteProduct, useUpdateProduct, useCreateProduct, useCategories } from '@/hooks/useProducts';
 import { useProductVariants, useCreateProductVariant, useUpdateProductVariant, useDeleteProductVariant } from '@/hooks/useAdmin';
 import { formatPrice } from '@/lib/utils';
+import { ProductImageGallery } from '@/components/admin/ProductImageGallery';
 import { 
   Plus, 
   Search, 
@@ -19,7 +20,8 @@ import {
   EyeOff,
   Package,
   X,
-  Layers
+  Layers,
+  ImageIcon
 } from 'lucide-react';
 import {
   Table,
@@ -414,8 +416,12 @@ export default function AdminProducts() {
           </DialogHeader>
           
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="basic">Basic</TabsTrigger>
+              <TabsTrigger value="images" disabled={!editingProduct}>
+                <ImageIcon className="h-4 w-4 mr-1" />
+                Images
+              </TabsTrigger>
               <TabsTrigger value="pricing">Pricing</TabsTrigger>
               <TabsTrigger value="inventory">Inventory</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
@@ -530,6 +536,16 @@ export default function AdminProducts() {
                   <Label>Featured</Label>
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="images" className="space-y-4 pt-4">
+              {editingProduct ? (
+                <ProductImageGallery productId={editingProduct.id} />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  Save the product first to add images.
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="pricing" className="space-y-4 pt-4">
