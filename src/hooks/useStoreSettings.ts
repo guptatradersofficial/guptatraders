@@ -23,6 +23,9 @@ export interface StoreSettings {
   enable_low_stock_alerts: string;
   low_stock_threshold: string;
   site_logo_url: string;
+  facebook_url: string;
+  instagram_url: string;
+  twitter_url: string;
 }
 
 export function useStoreSettings() {

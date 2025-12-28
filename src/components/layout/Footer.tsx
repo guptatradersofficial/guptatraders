@@ -16,6 +16,9 @@ export function Footer() {
   const storeEmail = storeSettings?.store_email || 'hello@guptatraders.com';
   const storePhone = storeSettings?.store_phone || '+91 98765 43210';
   const storeAddress = storeSettings?.store_address || '123 Furniture Lane, Sector 45, Gurugram, Haryana 122001';
+  const facebookUrl = storeSettings?.facebook_url || '';
+  const instagramUrl = storeSettings?.instagram_url || '';
+  const twitterUrl = storeSettings?.twitter_url || '';
 
   return (
     <footer className="bg-foreground text-background">
@@ -54,24 +57,39 @@ export function Footer() {
               partner for home and office furnishing.
             </p>
             <div className="flex gap-4">
-              <a
-                href="#"
-                className="text-background/70 hover:text-background transition-colors"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-background/70 hover:text-background transition-colors"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-background/70 hover:text-background transition-colors"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
+              {facebookUrl && (
+                <a
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-background/70 hover:text-background transition-colors"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
+              {instagramUrl && (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-background/70 hover:text-background transition-colors"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+              {twitterUrl && (
+                <a
+                  href={twitterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-background/70 hover:text-background transition-colors"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+              )}
+              {!facebookUrl && !instagramUrl && !twitterUrl && (
+                <span className="text-background/50 text-sm">No social links configured</span>
+              )}
             </div>
           </div>
 
