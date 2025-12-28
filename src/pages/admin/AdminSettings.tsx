@@ -93,6 +93,9 @@ export default function AdminSettings() {
     enable_low_stock_alerts: 'true',
     low_stock_threshold: '5',
     site_logo_url: '',
+    facebook_url: '',
+    instagram_url: '',
+    twitter_url: '',
   });
 
   // Sync local settings with fetched data
@@ -110,6 +113,9 @@ export default function AdminSettings() {
         enable_low_stock_alerts: storeSettings.enable_low_stock_alerts || 'true',
         low_stock_threshold: storeSettings.low_stock_threshold || '5',
         site_logo_url: storeSettings.site_logo_url || '',
+        facebook_url: storeSettings.facebook_url || '',
+        instagram_url: storeSettings.instagram_url || '',
+        twitter_url: storeSettings.twitter_url || '',
       });
     }
   }, [storeSettings]);
@@ -347,6 +353,44 @@ export default function AdminSettings() {
                       <p className="text-xs text-muted-foreground mt-1">
                         Recommended: PNG or SVG, max 2MB
                       </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Social Media Links</CardTitle>
+                  <CardDescription>Add your social media profile URLs (displayed in footer)</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="facebookUrl">Facebook URL</Label>
+                      <Input
+                        id="facebookUrl"
+                        placeholder="https://facebook.com/yourpage"
+                        value={localSettings.facebook_url}
+                        onChange={(e) => setLocalSettings({ ...localSettings, facebook_url: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="instagramUrl">Instagram URL</Label>
+                      <Input
+                        id="instagramUrl"
+                        placeholder="https://instagram.com/yourprofile"
+                        value={localSettings.instagram_url}
+                        onChange={(e) => setLocalSettings({ ...localSettings, instagram_url: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="twitterUrl">Twitter/X URL</Label>
+                      <Input
+                        id="twitterUrl"
+                        placeholder="https://x.com/yourhandle"
+                        value={localSettings.twitter_url}
+                        onChange={(e) => setLocalSettings({ ...localSettings, twitter_url: e.target.value })}
+                      />
                     </div>
                   </div>
                 </CardContent>
