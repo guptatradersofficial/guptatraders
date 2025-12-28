@@ -28,14 +28,21 @@ const signUpSchema = z.object({
   path: ['confirmPassword'],
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+});
+
 type SignInFormData = z.infer<typeof signInSchema>;
 type SignUpFormData = z.infer<typeof signUpSchema>;
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
-  const { signIn, signUp, user, isLoading: authLoading } = useAuth();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
+  const { signIn, signUp, resetPassword, user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,6 +69,13 @@ export default function AuthPage() {
     },
   });
 
+  const forgotPasswordForm = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: '',
+    },
+  });
+
   const handleSignIn = async (data: SignInFormData) => {
     setIsLoading(true);
     const { error } = await signIn(data.email, data.password);
@@ -82,12 +96,30 @@ export default function AuthPage() {
     setIsLoading(false);
 
     if (error) {
-      // Use ambiguous error message to prevent account enumeration attacks
-      // Don't reveal whether email is already registered
       signUpForm.setError('root', { 
         message: 'Unable to create account. Please check your details and try again.' 
       });
     }
+  };
+
+  const handleForgotPassword = async (data: ForgotPasswordFormData) => {
+    setIsLoading(true);
+    const { error } = await resetPassword(data.email);
+    setIsLoading(false);
+
+    if (error) {
+      forgotPasswordForm.setError('root', {
+        message: 'Unable to send reset email. Please try again.',
+      });
+    } else {
+      setResetEmailSent(true);
+    }
+  };
+
+  const handleBackToSignIn = () => {
+    setShowForgotPassword(false);
+    setResetEmailSent(false);
+    forgotPasswordForm.reset();
   };
 
   if (authLoading) {
@@ -111,12 +143,73 @@ export default function AuthPage() {
         >
           <Card className="border-border/50 shadow-elegant">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="font-display text-2xl">Welcome</CardTitle>
+              <CardTitle className="font-display text-2xl">
+                {showForgotPassword ? 'Reset Password' : 'Welcome'}
+              </CardTitle>
               <CardDescription>
-                Sign in to your account or create a new one
+                {showForgotPassword 
+                  ? 'Enter your email to receive a password reset link'
+                  : 'Sign in to your account or create a new one'}
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {showForgotPassword ? (
+                resetEmailSent ? (
+                  <div className="text-center space-y-4">
+                    <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-lg">
+                      <p className="font-medium">Check your email!</p>
+                      <p className="text-sm mt-1">We've sent a password reset link to your email address.</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={handleBackToSignIn}
+                    >
+                      Back to Sign In
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={forgotPasswordForm.handleSubmit(handleForgotPassword)} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="forgot-email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="forgot-email"
+                          type="email"
+                          placeholder="your@email.com"
+                          className="pl-10"
+                          {...forgotPasswordForm.register('email')}
+                        />
+                      </div>
+                      {forgotPasswordForm.formState.errors.email && (
+                        <p className="text-sm text-destructive">
+                          {forgotPasswordForm.formState.errors.email.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {forgotPasswordForm.formState.errors.root && (
+                      <p className="text-sm text-destructive text-center p-3 bg-destructive/10 rounded-lg">
+                        {forgotPasswordForm.formState.errors.root.message}
+                      </p>
+                    )}
+
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? 'Sending...' : 'Send Reset Link'}
+                    </Button>
+
+                    <Button 
+                      type="button"
+                      variant="ghost" 
+                      className="w-full"
+                      onClick={handleBackToSignIn}
+                    >
+                      Back to Sign In
+                    </Button>
+                  </form>
+                )
+              ) : (
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-2 mb-6">
                   <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -181,6 +274,17 @@ export default function AuthPage() {
                         {signInForm.formState.errors.root.message}
                       </p>
                     )}
+
+                    <div className="flex justify-end">
+                      <Button 
+                        type="button"
+                        variant="link" 
+                        className="px-0 text-sm text-muted-foreground hover:text-primary"
+                        onClick={() => setShowForgotPassword(true)}
+                      >
+                        Forgot password?
+                      </Button>
+                    </div>
 
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? 'Signing in...' : 'Sign In'}
@@ -291,6 +395,7 @@ export default function AuthPage() {
                   </form>
                 </TabsContent>
               </Tabs>
+              )}
             </CardContent>
           </Card>
         </motion.div>
