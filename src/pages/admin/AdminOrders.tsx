@@ -12,6 +12,7 @@ import { formatPrice } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import OrderSlipPrint from '@/components/admin/OrderSlipPrint';
+import { escapeHtml } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
 import { 
   Search, 
@@ -243,7 +244,7 @@ export default function AdminOrders() {
             <!DOCTYPE html>
             <html>
               <head>
-                <title>Order Slip - ${selectedOrder?.order_number}</title>
+                <title>Order Slip - ${escapeHtml(selectedOrder?.order_number)}</title>
                 <style>
                   * { margin: 0; padding: 0; box-sizing: border-box; }
                   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }

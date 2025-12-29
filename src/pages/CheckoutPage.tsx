@@ -125,6 +125,7 @@ export default function CheckoutPage() {
       const { data, error } = await supabase.rpc('validate_coupon', {
         p_code: couponCode.toUpperCase(),
         p_order_subtotal: subtotal,
+        p_user_id: user?.id || null,
       });
 
       if (error) throw error;
