@@ -11,7 +11,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -253,28 +252,40 @@ export default function CartPage() {
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
                     <LogIn className="h-5 w-5" />
-                    Login Required
+                    How would you like to checkout?
                   </DialogTitle>
                   <DialogDescription>
-                    Please login or create an account to proceed with checkout. This helps us save your order history and delivery addresses.
+                    Sign in to save your order history and delivery addresses, or continue as a guest.
                   </DialogDescription>
                 </DialogHeader>
-                <DialogFooter className="flex-col gap-2 sm:flex-row">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowLoginDialog(false)}
-                    className="w-full sm:w-auto"
-                  >
-                    Continue Browsing
-                  </Button>
+                <div className="flex flex-col gap-3 pt-2">
                   <Button
                     onClick={() => navigate('/auth?redirect=/checkout')}
-                    className="w-full sm:w-auto"
+                    className="w-full"
                   >
+                    <LogIn className="mr-2 h-4 w-4" />
                     Login / Sign Up
+                  </Button>
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-border" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">or</span>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowLoginDialog(false);
+                      navigate('/checkout');
+                    }}
+                    className="w-full"
+                  >
+                    Continue as Guest
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </DialogFooter>
+                </div>
               </DialogContent>
             </Dialog>
           </motion.div>
