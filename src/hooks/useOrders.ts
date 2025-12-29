@@ -33,6 +33,7 @@ export interface Order {
   tracking_number: string | null;
   shipped_at: string | null;
   delivered_at: string | null;
+  customer_gst_number: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -209,12 +210,14 @@ export function useCreateOrder() {
       guestEmail,
       discountAmount,
       couponCode,
+      customerGstNumber,
     }: {
       items: { productId: string; quantity: number; name: string; sku?: string; price: number }[];
       shippingAddress: Order['shipping_address'];
       guestEmail?: string;
       discountAmount?: number;
       couponCode?: string;
+      customerGstNumber?: string;
     }) => {
       // Prepare items for the RPC function
       const itemsJsonb = items.map(item => ({
@@ -234,6 +237,14 @@ export function useCreateOrder() {
 
       if (error) throw error;
       if (!orderId) throw new Error('Failed to create order');
+
+      // Update with GST number if provided
+      if (customerGstNumber?.trim()) {
+        await supabase
+          .from('orders')
+          .update({ customer_gst_number: customerGstNumber.trim() })
+          .eq('id', orderId);
+      }
 
       // Fetch the created order to return
       const { data: order, error: fetchError } = await supabase

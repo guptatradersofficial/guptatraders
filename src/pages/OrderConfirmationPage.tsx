@@ -23,9 +23,32 @@ interface ShippingAddress {
   country?: string;
 }
 
+interface OrderData {
+  id: string;
+  order_number: string;
+  created_at: string;
+  status: string;
+  payment_status: string;
+  subtotal: number;
+  tax_amount: number;
+  shipping_amount: number;
+  discount_amount: number;
+  total_amount: number;
+  shipping_address: ShippingAddress;
+  customer_gst_number?: string | null;
+  items?: Array<{
+    id: string;
+    product_name: string;
+    product_sku?: string;
+    quantity: number;
+    unit_price: number;
+    total_price: number;
+  }>;
+}
+
 export default function OrderConfirmationPage() {
   const { orderId } = useParams<{ orderId: string }>();
-  const { data: order, isLoading, error } = useOrder(orderId || '');
+  const { data: order, isLoading, error } = useOrder(orderId || '') as { data: OrderData | null; isLoading: boolean; error: Error | null };
   const { data: storeSettings } = useStoreSettings();
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -203,6 +226,13 @@ export default function OrderConfirmationPage() {
                   {address.phone}
                 </p>
               </div>
+              {order?.customer_gst_number && (
+                <div className="mt-4 pt-3 border-t">
+                  <p className="text-sm">
+                    <span className="font-medium">Customer GST:</span> {order.customer_gst_number}
+                  </p>
+                </div>
+              )}
             </div>
 
             <Separator className="my-6" />

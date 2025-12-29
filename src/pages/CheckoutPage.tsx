@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Plus, Ticket, ShoppingBag, Phone, User, AlertCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, Plus, Ticket, ShoppingBag, Phone, User, AlertCircle, FileText } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,6 +58,9 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidation | null>(null);
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+
+  // GST Number (optional)
+  const [customerGstNumber, setCustomerGstNumber] = useState('');
 
   // Guest checkout fields
   const [guestEmail, setGuestEmail] = useState('');
@@ -208,6 +211,7 @@ export default function CheckoutPage() {
         guestEmail: user ? undefined : guestEmail,
         discountAmount: discountAmount,
         couponCode: appliedCoupon?.valid ? couponCode.toUpperCase() : undefined,
+        customerGstNumber: customerGstNumber.trim() || undefined,
       });
 
       // Clear cart after successful order
@@ -474,6 +478,29 @@ export default function CheckoutPage() {
                     </Button>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* GST Number (Optional) */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  GST Number (Optional)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Enter GST Number (e.g., 22AAAAA0000A1Z5)"
+                    value={customerGstNumber}
+                    onChange={(e) => setCustomerGstNumber(e.target.value.toUpperCase())}
+                    maxLength={15}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    If you have a GST number, enter it here to include on your invoice. This is optional and won't affect pricing.
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
