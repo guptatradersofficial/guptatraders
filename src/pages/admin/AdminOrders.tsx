@@ -370,6 +370,12 @@ export default function AdminOrders() {
                       {selectedOrder.guest_email && (
                         <p className="text-xs mt-1">{selectedOrder.guest_email}</p>
                       )}
+                      {selectedOrder.customer_gst_number && (
+                        <div className="mt-3 pt-3 border-t border-border/50">
+                          <p className="text-xs font-medium text-foreground">Customer GST Number:</p>
+                          <p className="font-mono text-sm">{selectedOrder.customer_gst_number}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 

@@ -358,6 +358,7 @@ export type Database = {
         Row: {
           billing_address: Json | null
           created_at: string
+          customer_gst_number: string | null
           delivered_at: string | null
           discount_amount: number
           guest_email: string | null
@@ -379,6 +380,7 @@ export type Database = {
         Insert: {
           billing_address?: Json | null
           created_at?: string
+          customer_gst_number?: string | null
           delivered_at?: string | null
           discount_amount?: number
           guest_email?: string | null
@@ -400,6 +402,7 @@ export type Database = {
         Update: {
           billing_address?: Json | null
           created_at?: string
+          customer_gst_number?: string | null
           delivered_at?: string | null
           discount_amount?: number
           guest_email?: string | null
