@@ -359,12 +359,18 @@ export default function CheckoutPage() {
                         />
                       </div>
                       <div>
-                        <Label>Phone *</Label>
+                        <Label>Phone Number *</Label>
                         <Input
+                          type="tel"
                           value={guestAddress.phone}
                           onChange={(e) => setGuestAddress(prev => ({ ...prev, phone: e.target.value }))}
-                          placeholder="+91 98765 43210"
+                          placeholder="Enter 10-digit mobile number"
+                          required
+                          className={!guestAddress.phone.trim() ? 'border-destructive focus-visible:ring-destructive' : ''}
                         />
+                        {!guestAddress.phone.trim() && (
+                          <p className="text-xs text-destructive mt-1">Phone number is required</p>
+                        )}
                       </div>
                       <div className="md:col-span-2">
                         <Label>Address Line 1 *</Label>

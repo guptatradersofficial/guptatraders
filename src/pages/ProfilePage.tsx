@@ -256,6 +256,17 @@ export default function ProfilePage() {
   };
 
   const handleSaveAddress = () => {
+    // Validate required fields
+    if (!newAddress.phone?.trim()) {
+      toast({ title: 'Phone number is required', variant: 'destructive' });
+      return;
+    }
+    if (!newAddress.full_name?.trim() || !newAddress.address_line_1?.trim() || 
+        !newAddress.city?.trim() || !newAddress.state?.trim() || !newAddress.postal_code?.trim()) {
+      toast({ title: 'Please fill all required fields', variant: 'destructive' });
+      return;
+    }
+    
     if (editingAddress) {
       updateAddress.mutate({ ...newAddress, id: editingAddress.id } as Address & { id: string });
     } else {
@@ -674,11 +685,18 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Phone *</Label>
+                <Label>Phone Number *</Label>
                 <Input
+                  type="tel"
                   value={newAddress.phone}
                   onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
+                  placeholder="Enter 10-digit mobile number"
+                  required
+                  className={!newAddress.phone?.trim() ? 'border-destructive focus-visible:ring-destructive' : ''}
                 />
+                {!newAddress.phone?.trim() && (
+                  <p className="text-xs text-destructive">Phone number is required</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Address Line 1 *</Label>
