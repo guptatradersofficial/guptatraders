@@ -19,6 +19,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { motion, AnimatePresence } from 'framer-motion';
 import { categories } from '@/data/products';
+import { SaleCountdownBanner } from '@/components/home/SaleCountdownBanner';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -45,10 +46,8 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-      {/* Top bar */}
-      <div className="bg-primary text-primary-foreground py-2 text-center text-sm">
-        <p>Free delivery on orders above ₹10,000 | Use code WELCOME10 for 10% off</p>
-      </div>
+      {/* Top bar / Sale Banner */}
+      <SaleCountdownBanner />
 
       {/* Main header */}
       <div className="container">

@@ -73,8 +73,13 @@ export function SaleCountdownBanner() {
     return () => clearInterval(timer);
   }, [activeSale?.expires_at]);
   
+  // Show default promo banner if no active sale
   if (!activeSale || !timeLeft) {
-    return null;
+    return (
+      <div className="bg-primary text-primary-foreground py-2 text-center text-sm">
+        <p>Free delivery on orders above ₹10,000 | Use code WELCOME10 for 10% off</p>
+      </div>
+    );
   }
   
   const discountText = activeSale.discount_type === 'percentage' 
