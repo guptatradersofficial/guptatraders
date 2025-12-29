@@ -54,6 +54,20 @@
     --card-shadow-hover: 0 12px 32px -8px hsl(30 20% 20% / 0.15);
     --text-gradient: linear-gradient(135deg, hsl(25 75% 47%) 0%, hsl(38 70% 50%) 100%);
     
+    /* Admin Panel Tokens */
+    --admin-sidebar: 30 8% 12%;
+    --admin-sidebar-foreground: 40 15% 85%;
+    --admin-sidebar-muted: 30 8% 18%;
+    --admin-sidebar-hover: 30 8% 22%;
+    --admin-sidebar-active: 25 75% 47%;
+    --admin-header: 40 30% 99%;
+    --admin-content: 40 25% 97%;
+    --admin-card: 0 0% 100%;
+    --admin-stat-1: 200 80% 50%;
+    --admin-stat-2: 160 60% 45%;
+    --admin-stat-3: 45 90% 50%;
+    --admin-stat-4: 280 60% 55%;
+    
     /* Sidebar - keeping for component compatibility */
     --sidebar-background: 40 30% 97%;
     --sidebar-foreground: 30 10% 25%;
@@ -97,6 +111,20 @@
     --hero-gradient: linear-gradient(135deg, hsl(30 15% 10%) 0%, hsl(30 12% 15%) 100%);
     --card-shadow: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
     --card-shadow-hover: 0 12px 32px -8px hsl(0 0% 0% / 0.4);
+
+    /* Admin Panel Tokens (Dark) */
+    --admin-sidebar: 30 10% 8%;
+    --admin-sidebar-foreground: 40 15% 80%;
+    --admin-sidebar-muted: 30 10% 14%;
+    --admin-sidebar-hover: 30 10% 18%;
+    --admin-sidebar-active: 28 80% 55%;
+    --admin-header: 30 12% 12%;
+    --admin-content: 30 12% 10%;
+    --admin-card: 30 12% 14%;
+    --admin-stat-1: 200 80% 55%;
+    --admin-stat-2: 160 60% 50%;
+    --admin-stat-3: 45 90% 55%;
+    --admin-stat-4: 280 60% 60%;
 
     --sidebar-background: 30 12% 10%;
     --sidebar-foreground: 40 20% 90%;
@@ -180,5 +208,90 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* Admin Panel Utilities */
+  .admin-card {
+    @apply bg-[hsl(var(--admin-card))] rounded-xl border border-border/50 shadow-sm;
+    transition: all 0.2s ease;
+  }
+
+  .admin-card:hover {
+    @apply shadow-md border-border;
+  }
+
+  .admin-stat-card {
+    @apply admin-card relative overflow-hidden;
+  }
+
+  .admin-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    opacity: 0.1;
+    transform: translate(30%, -30%);
+  }
+
+  .admin-stat-1::before { background: hsl(var(--admin-stat-1)); }
+  .admin-stat-2::before { background: hsl(var(--admin-stat-2)); }
+  .admin-stat-3::before { background: hsl(var(--admin-stat-3)); }
+  .admin-stat-4::before { background: hsl(var(--admin-stat-4)); }
+
+  .admin-nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
+  }
+
+  .admin-nav-item:hover {
+    @apply bg-[hsl(var(--admin-sidebar-hover))];
+  }
+
+  .admin-nav-item.active {
+    @apply bg-[hsl(var(--admin-sidebar-active))] text-white;
+  }
+
+  /* Stagger animation for list items */
+  .stagger-fade-in > * {
+    opacity: 0;
+    animation: staggerFadeIn 0.4s ease-out forwards;
+  }
+
+  .stagger-fade-in > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-fade-in > *:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-fade-in > *:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-fade-in > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-fade-in > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-fade-in > *:nth-child(6) { animation-delay: 0.3s; }
+  .stagger-fade-in > *:nth-child(7) { animation-delay: 0.35s; }
+  .stagger-fade-in > *:nth-child(8) { animation-delay: 0.4s; }
+
+  @keyframes staggerFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Smooth page transition */
+  .admin-page-enter {
+    animation: adminPageEnter 0.3s ease-out;
+  }
+
+  @keyframes adminPageEnter {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
