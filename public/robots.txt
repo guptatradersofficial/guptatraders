@@ -1,6 +1,6 @@
 # Gupta Traders - Robots.txt
 # SEO Optimized - Last updated: January 1, 2026
-# Domain: https://www.guptatraders.net
+# Domain: https://www.guptatraders.online
 
 # Default rules for all search engines
 User-agent: *
@@ -93,5 +93,5 @@ Crawl-delay: 0.5
 Request-rate: 60/60
 
 # Sitemap locations
-Sitemap: https://www.guptatraders.net/sitemap.xml
-Sitemap: https://www.guptatraders.net/sitemap-products.xml
+Sitemap: https://www.guptatraders.online/sitemap.xml
+Sitemap: https://www.guptatraders.online/sitemap-products.xml
