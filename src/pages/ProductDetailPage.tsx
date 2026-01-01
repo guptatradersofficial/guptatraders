@@ -127,7 +127,7 @@ export default function ProductDetailPage() {
           url: window.location.href,
         });
       } catch (err) {
-        console.log('Share cancelled');
+        // Share was cancelled or failed, no action needed
       }
     } else {
       navigator.clipboard.writeText(window.location.href);

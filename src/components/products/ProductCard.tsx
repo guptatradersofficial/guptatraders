@@ -113,6 +113,11 @@ export function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
 
+            {/* GST Note */}
+            <p className="text-xs text-muted-foreground mt-1">
+              (Includes configured GST)
+            </p>
+
             {/* Stock status */}
             {!inStock && (
               <p className="text-sm text-destructive mt-2">Out of Stock</p>

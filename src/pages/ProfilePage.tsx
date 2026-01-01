@@ -3,7 +3,7 @@ import { useNavigate, Navigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/context/AuthContext';
-import { useUserOrders, OrderStatus, PaymentStatus } from '@/hooks/useOrders';
+import { useUserOrders, OrderStatus, PaymentStatus, OrderItem } from '@/hooks/useOrders';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -280,7 +280,7 @@ export default function ProfilePage() {
     setIsAddingAddress(true);
   };
 
-  const getShippingAddress = (order: any): ShippingAddress => {
+  const getShippingAddress = (order: Order): ShippingAddress => {
     return (order.shipping_address as ShippingAddress) || {};
   };
 
@@ -289,7 +289,7 @@ export default function ProfilePage() {
     return statusSteps.indexOf(status);
   };
 
-  const handlePrintOrderSlip = (order: any) => {
+  const handlePrintOrderSlip = (order: Order) => {
     const address = getShippingAddress(order);
     const printWindow = window.open('', '_blank');
     if (printWindow) {
@@ -342,7 +342,7 @@ export default function ProfilePage() {
             <table>
               <thead><tr><th>Product</th><th>Qty</th><th class="text-right">Price</th><th class="text-right">Total</th></tr></thead>
               <tbody>
-                ${order.items?.map((item: any) => `
+                ${order.items?.map((item: OrderItem) => `
                   <tr>
                     <td>${escapeHtml(item.product_name)}</td>
                     <td>${escapeHtml(String(item.quantity))}</td>
@@ -498,7 +498,7 @@ export default function ProfilePage() {
                   </div>
                 ) : orders.length > 0 ? (
                   <div className="space-y-4">
-                    {orders.map((order: any) => {
+                    {orders.map((order) => {
                       const StatusIcon = statusIcons[order.status as OrderStatus] || Clock;
                       return (
                         <motion.div 
@@ -533,7 +533,7 @@ export default function ProfilePage() {
                           {/* Order Items Preview */}
                           <div className="p-4 space-y-3">
                             <div className="flex flex-wrap gap-2">
-                              {order.items?.slice(0, 3).map((item: any) => (
+                              {order.items?.slice(0, 3).map((item: OrderItem) => (
                                 <div key={item.id} className="text-sm bg-muted/50 rounded px-2 py-1">
                                   {item.product_name} × {item.quantity}
                                 </div>
@@ -851,7 +851,7 @@ export default function ProfilePage() {
                   <div>
                     <h4 className="font-medium mb-2">Items</h4>
                     <div className="space-y-2">
-                      {selectedOrder.items?.map((item: any) => (
+                      {selectedOrder.items?.map((item: OrderItem) => (
                         <div key={item.id} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
                           <div>
                             <p className="font-medium">{item.product_name}</p>

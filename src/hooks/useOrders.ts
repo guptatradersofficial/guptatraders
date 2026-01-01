@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
+import { ShippingBreakdown } from '@/lib/utils';
 
 export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded' | 'partially_refunded';
@@ -221,7 +222,7 @@ export function useCreateOrder() {
       couponCode?: string;
       customerGstNumber?: string;
       deliveryDistance?: number;
-      shippingBreakdown?: any;
+      shippingBreakdown?: ShippingBreakdown | null;
     }) => {
       // Prepare items for the RPC function
       const itemsJsonb = items.map(item => ({
@@ -230,6 +231,7 @@ export function useCreateOrder() {
       }));
 
       // Call secure server-side RPC function for atomic order creation
+      // Note: p_tax_amount is not needed in new GST model (price already includes GST)
       const { data: orderId, error } = await supabase.rpc('create_order_with_items', {
         p_user_id: user?.id || null,
         p_guest_email: guestEmail || null,

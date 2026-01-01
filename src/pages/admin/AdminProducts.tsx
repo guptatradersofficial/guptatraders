@@ -29,7 +29,8 @@ import {
   DollarSign,
   Box,
   Tag,
-  Settings2
+  Settings2,
+  Info
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -68,7 +69,7 @@ interface ProductFormData {
   slug: string;
   description: string;
   short_description: string;
-  price: string;
+  price: string; // Display price shown to customers (includes configured GST)
   compare_at_price: string;
   cost_price: string;
   sku: string;
@@ -92,7 +93,7 @@ const defaultFormData: ProductFormData = {
   slug: '',
   description: '',
   short_description: '',
-  price: '',
+  price: '', // Admin enters the display price
   compare_at_price: '',
   cost_price: '',
   sku: '',
@@ -155,7 +156,7 @@ export default function AdminProducts() {
     setIsDialogOpen(true);
   };
 
-  const handleOpenEdit = (product: any) => {
+  const handleOpenEdit = (product: Product) => {
     setEditingProduct(product);
     setFormData({
       name: product.name || '',
@@ -184,12 +185,15 @@ export default function AdminProducts() {
   };
 
   const handleSave = async () => {
+    const displayPrice = Number(formData.price) || 0;
+
     const payload = {
       name: formData.name,
       slug: formData.slug || generateSlug(formData.name),
       description: formData.description || null,
       short_description: formData.short_description || null,
-      price: Number(formData.price),
+      price: displayPrice, // Display price (already includes configured GST)
+      gst_inclusive_price: null, // No longer needed; price is the final price
       compare_at_price: formData.compare_at_price ? Number(formData.compare_at_price) : null,
       cost_price: formData.cost_price ? Number(formData.cost_price) : null,
       sku: formData.sku || null,
@@ -646,16 +650,40 @@ export default function AdminProducts() {
                 </TabsContent>
 
                 <TabsContent value="pricing" className="space-y-4 pt-4">
-                  <div className="grid grid-cols-3 gap-4">
+                  {/* GST Pricing Info Box */}
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg flex gap-3">
+                    <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                      <p className="font-medium">GST-Inclusive Pricing</p>
+                      <ul className="list-disc list-inside space-y-0.5">
+                        <li>Enter the <strong>final price shown to customers</strong></li>
+                        <li>This price already includes the configured GST percentage from Admin Settings</li>
+                        <li>The same price is shown in product listing, cart, and checkout</li>
+                        <li>No additional GST is calculated or added at checkout</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-xs font-medium">Price *</Label>
+                      <Label className="text-xs font-medium">
+                        Display Price *
+                        <span className="text-red-500 ml-1">₹</span>
+                      </Label>
                       <Input
                         type="number"
                         value={formData.price}
-                        onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                        placeholder="0"
+                        onChange={(e) => setFormData(prev => ({ 
+                          ...prev, 
+                          price: e.target.value,
+                        }))}
+                        placeholder="e.g., 5000"
                         className="bg-muted/50 border-0"
+                        step="0.01"
                       />
+                      <p className="text-xs text-muted-foreground">
+                        Final price shown to customers (includes configured GST)
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-xs font-medium">Compare at Price</Label>
@@ -663,10 +691,13 @@ export default function AdminProducts() {
                         type="number"
                         value={formData.compare_at_price}
                         onChange={(e) => setFormData(prev => ({ ...prev, compare_at_price: e.target.value }))}
-                        placeholder="Original price"
+                        placeholder="Original price (for discounts)"
                         className="bg-muted/50 border-0"
                       />
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label className="text-xs font-medium">Cost Price</Label>
                       <Input
@@ -678,6 +709,16 @@ export default function AdminProducts() {
                       />
                     </div>
                   </div>
+
+                  {/* Price Display Preview */}
+                  {formData.price && (
+                    <div className="p-3 bg-muted/50 rounded-lg border border-border">
+                      <p className="text-xs font-medium mb-2">Customer View Preview</p>
+                      <div className="text-sm font-medium">
+                        {formatPrice(Number(formData.price))} <span className="text-xs text-amber-600">(includes configured GST)</span>
+                      </div>
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="inventory" className="space-y-4 pt-4">

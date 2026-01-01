@@ -352,6 +352,19 @@ CREATE TABLE IF NOT EXISTS public.admin_activity_logs (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 5.21 About Content Table
+CREATE TABLE IF NOT EXISTS public.about_content (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  section_key TEXT NOT NULL UNIQUE,
+  title TEXT,
+  content TEXT,
+  image_url TEXT,
+  sort_order INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- =====================================================
 -- SECTION 6: INDEXES
 -- =====================================================
@@ -361,32 +374,52 @@ CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_products_active ON products(is_active) WHERE is_active = true;
 CREATE INDEX IF NOT EXISTS idx_products_featured ON products(is_featured) WHERE is_featured = true;
+CREATE INDEX IF NOT EXISTS idx_products_created ON products(created_at DESC);
 
 -- Categories
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
 CREATE INDEX IF NOT EXISTS idx_categories_active ON categories(is_active) WHERE is_active = true;
+CREATE INDEX IF NOT EXISTS idx_categories_parent ON categories(parent_id);
 
 -- Orders
 CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON orders(payment_status);
+
+-- Order Items
+CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product ON order_items(product_id);
 
 -- Coupons
 CREATE INDEX IF NOT EXISTS idx_coupons_code_active ON coupons(UPPER(code)) WHERE is_active = true;
 CREATE INDEX IF NOT EXISTS idx_coupons_announcement ON coupons(is_announcement, is_active) WHERE is_announcement = true AND is_active = true;
+CREATE INDEX IF NOT EXISTS idx_coupons_expires ON coupons(expires_at) WHERE is_active = true;
 
 -- Coupon Usages
 CREATE INDEX IF NOT EXISTS idx_coupon_usages_user_coupon ON coupon_usages(user_id, coupon_id);
+CREATE INDEX IF NOT EXISTS idx_coupon_usages_order ON coupon_usages(order_id);
 
 -- Cart Items
 CREATE INDEX IF NOT EXISTS idx_cart_items_user ON cart_items(user_id);
+CREATE INDEX IF NOT EXISTS idx_cart_items_product ON cart_items(product_id);
 
 -- Wishlists
 CREATE INDEX IF NOT EXISTS idx_wishlists_user ON wishlists(user_id);
+CREATE INDEX IF NOT EXISTS idx_wishlists_product ON wishlists(product_id);
 
 -- Reviews
 CREATE INDEX IF NOT EXISTS idx_reviews_product ON reviews(product_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_approved ON reviews(is_approved) WHERE is_approved = true;
+CREATE INDEX IF NOT EXISTS idx_reviews_user ON reviews(user_id);
+
+-- Addresses
+CREATE INDEX IF NOT EXISTS idx_addresses_user ON addresses(user_id);
+CREATE INDEX IF NOT EXISTS idx_addresses_default ON addresses(user_id, is_default) WHERE is_default = true;
+
+-- About Content
+CREATE INDEX IF NOT EXISTS idx_about_content_key ON about_content(section_key);
+CREATE INDEX IF NOT EXISTS idx_about_content_active ON about_content(is_active) WHERE is_active = true;
 
 -- =====================================================
 -- SECTION 7: ENABLE ROW LEVEL SECURITY
@@ -412,6 +445,7 @@ ALTER TABLE public.store_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.footer_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_activity_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.about_content ENABLE ROW LEVEL SECURITY;
 
 -- =====================================================
 -- SECTION 8: SECURITY FUNCTIONS
@@ -539,6 +573,11 @@ CREATE POLICY "Admins can manage notifications" ON admin_notifications FOR ALL U
 -- 9.20 Admin Activity Logs Policies
 CREATE POLICY "Admins can view activity logs" ON admin_activity_logs FOR SELECT USING (is_admin());
 CREATE POLICY "Admins can create activity logs" ON admin_activity_logs FOR INSERT WITH CHECK (is_admin());
+
+-- 9.21 About Content Policies
+CREATE POLICY "Anyone can read about content" ON about_content FOR SELECT USING (is_active = true);
+CREATE POLICY "Admins can view all about content" ON about_content FOR SELECT USING (is_admin());
+CREATE POLICY "Admins can manage about content" ON about_content FOR ALL USING (is_admin());
 
 -- =====================================================
 -- SECTION 10: DATABASE FUNCTIONS
@@ -971,6 +1010,7 @@ SELECT create_updated_at_trigger('returns');
 SELECT create_updated_at_trigger('shipping_zones');
 SELECT create_updated_at_trigger('store_settings');
 SELECT create_updated_at_trigger('footer_items');
+SELECT create_updated_at_trigger('about_content');
 
 DROP FUNCTION create_updated_at_trigger(TEXT);
 
@@ -1032,16 +1072,24 @@ GRANT EXECUTE ON FUNCTION public.create_order_with_items(UUID, TEXT, JSONB, JSON
 GRANT EXECUTE ON FUNCTION public.get_coupon_by_code(TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.has_role(UUID, public.app_role) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.calculate_order_total(NUMERIC, NUMERIC) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_active_products_count() TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_total_orders_count() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_total_revenue() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_low_stock_products() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.search_products(TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_best_selling_products(INT) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.update_stock_after_return(UUID, BOOLEAN) TO authenticated;
 
 -- =====================================================
--- SECTION 14: DEFAULT STORE SETTINGS
+-- SECTION 14: DEFAULT STORE SETTINGS & DATA
 -- =====================================================
 
 INSERT INTO store_settings (key, value, type) VALUES
-  ('store_name', 'Furniture Store', 'text'),
-  ('store_email', 'support@example.com', 'text'),
+  ('store_name', 'Gupta Traders', 'text'),
+  ('store_email', 'support@guptatraders.com', 'text'),
   ('store_phone', '+91 9876543210', 'text'),
-  ('store_address', '123 Main Street, City, State, India - 123456', 'text'),
+  ('store_address', 'Gupta Trading Company, Main Street, City, State, India', 'text'),
   ('gst_number', '', 'text'),
   ('tax_rate', '18', 'text'),
   ('auto_cancel_days', '7', 'text'),
@@ -1051,8 +1099,219 @@ INSERT INTO store_settings (key, value, type) VALUES
   ('site_logo_url', '', 'text'),
   ('facebook_url', '', 'text'),
   ('instagram_url', '', 'text'),
-  ('twitter_url', '', 'text')
+  ('twitter_url', '', 'text'),
+  ('order_confirmation_email', 'true', 'boolean'),
+  ('shipping_confirmation_email', 'true', 'boolean'),
+  ('return_window_days', '30', 'text'),
+  ('max_return_items', '10', 'text')
 ON CONFLICT (key) DO NOTHING;
+
+-- Insert default about content
+INSERT INTO about_content (section_key, title, content, sort_order, is_active) VALUES
+  ('hero_title', 'Crafting Beautiful Spaces Since 1985', NULL, 1, true),
+  ('hero_subtitle', 'Premium furniture for modern living', NULL, 2, true),
+  ('story_title', 'Our Story', 'Discover our journey in creating exceptional furniture', 3, true),
+  ('story_content', 'With over 35 years of experience, we pride ourselves on delivering quality and craftsmanship.', NULL, 4, true),
+  ('owner_name', 'Founder Name', NULL, 5, true),
+  ('owner_title', 'Founder & CEO', NULL, 6, true),
+  ('owner_quote', 'Quality is our commitment to you.', NULL, 7, true),
+  ('showroom_title', 'Visit Our Showroom', NULL, 8, true),
+  ('showroom_subtitle', 'Experience our collection in person', NULL, 9, true),
+  ('stat_years', '35+', 'Years', 10, true),
+  ('stat_customers', '50K+', 'Happy Customers', 11, true),
+  ('stat_products', '100K+', 'Products Delivered', 12, true),
+  ('stat_cities', '200+', 'Cities Served', 13, true)
+ON CONFLICT (section_key) DO NOTHING;
+
+-- Insert default footer items
+INSERT INTO footer_items (section, title, url, sort_order, is_active) VALUES
+  ('quick_links', 'Home', '/', 1, true),
+  ('quick_links', 'Products', '/products', 2, true),
+  ('quick_links', 'About Us', '/about', 3, true),
+  ('quick_links', 'Contact', '/contact', 4, true),
+  ('customer_service', 'Shipping Policy', '/shipping-policy', 1, true),
+  ('customer_service', 'Returns & Refunds', '/returns-refunds', 2, true),
+  ('customer_service', 'FAQ', '/faq', 3, true),
+  ('customer_service', 'Support', '/support', 4, true),
+  ('about', 'About Us', '/about', 1, true),
+  ('about', 'Careers', '/careers', 2, true),
+  ('about', 'Blog', '/blog', 3, true),
+  ('legal', 'Terms of Service', '/terms', 1, true),
+  ('legal', 'Privacy Policy', '/privacy', 2, true),
+  ('legal', 'Cookie Policy', '/cookies', 3, true),
+  ('legal', 'Disclaimer', '/disclaimer', 4, true)
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
+-- SECTION 15: ADDITIONAL HELPER FUNCTIONS
+-- =====================================================
+
+-- 10.11 Calculate Total Price for Order
+CREATE OR REPLACE FUNCTION public.calculate_order_total(
+  p_subtotal NUMERIC,
+  p_tax_rate NUMERIC DEFAULT 18
+)
+RETURNS TABLE(
+  subtotal NUMERIC,
+  tax_amount NUMERIC,
+  shipping_amount NUMERIC,
+  total_with_tax NUMERIC
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_tax DECIMAL(10,2);
+  v_shipping DECIMAL(10,2);
+BEGIN
+  v_tax := ROUND(p_subtotal * (p_tax_rate / 100), 2);
+  v_shipping := CASE WHEN p_subtotal >= 10000 THEN 0 ELSE 500 END;
+  
+  RETURN QUERY SELECT 
+    p_subtotal,
+    v_tax,
+    v_shipping,
+    p_subtotal + v_tax + v_shipping;
+END;
+$$;
+
+-- 10.12 Get Active Products Count
+CREATE OR REPLACE FUNCTION public.get_active_products_count()
+RETURNS INTEGER
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT COUNT(*)::INTEGER FROM products WHERE is_active = true;
+$$;
+
+-- 10.13 Get Total Orders Count
+CREATE OR REPLACE FUNCTION public.get_total_orders_count()
+RETURNS INTEGER
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT COUNT(*)::INTEGER FROM orders;
+$$;
+
+-- 10.14 Get Total Revenue
+CREATE OR REPLACE FUNCTION public.get_total_revenue()
+RETURNS NUMERIC
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE payment_status = 'paid';
+$$;
+
+-- 10.15 Get Low Stock Products
+CREATE OR REPLACE FUNCTION public.get_low_stock_products()
+RETURNS TABLE(
+  id UUID,
+  name TEXT,
+  stock_quantity INTEGER,
+  low_stock_threshold INTEGER
+)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT id, name, stock_quantity, low_stock_threshold
+  FROM products
+  WHERE stock_quantity <= COALESCE(low_stock_threshold, 5)
+  AND is_active = true
+  ORDER BY stock_quantity ASC;
+$$;
+
+-- 10.16 Search Products
+CREATE OR REPLACE FUNCTION public.search_products(p_query TEXT)
+RETURNS TABLE(
+  id UUID,
+  name TEXT,
+  description TEXT,
+  price NUMERIC,
+  image_url TEXT
+)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT DISTINCT p.id, p.name, p.short_description, p.price,
+    (SELECT image_url FROM product_images WHERE product_id = p.id AND is_primary = true LIMIT 1)
+  FROM products p
+  LEFT JOIN categories c ON p.category_id = c.id
+  WHERE p.is_active = true
+    AND (
+      p.name ILIKE '%' || p_query || '%'
+      OR p.description ILIKE '%' || p_query || '%'
+      OR c.name ILIKE '%' || p_query || '%'
+    )
+  ORDER BY p.name ASC
+  LIMIT 50;
+$$;
+
+-- 10.17 Get Best Selling Products
+CREATE OR REPLACE FUNCTION public.get_best_selling_products(p_limit INT DEFAULT 10)
+RETURNS TABLE(
+  id UUID,
+  name TEXT,
+  total_sold INTEGER,
+  revenue NUMERIC
+)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT p.id, p.name, SUM(oi.quantity)::INTEGER, SUM(oi.total_price)
+  FROM products p
+  LEFT JOIN order_items oi ON p.id = oi.product_id
+  LEFT JOIN orders o ON oi.order_id = o.id
+  WHERE o.payment_status = 'paid' OR o IS NULL
+  GROUP BY p.id, p.name
+  ORDER BY SUM(oi.quantity) DESC NULLS LAST
+  LIMIT p_limit;
+$$;
+
+-- 10.18 Update Product Stock After Return
+CREATE OR REPLACE FUNCTION public.update_stock_after_return(
+  p_return_id UUID,
+  p_approve BOOLEAN
+)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_return_record RECORD;
+  v_order_item RECORD;
+BEGIN
+  IF NOT p_approve THEN
+    RETURN false;
+  END IF;
+  
+  SELECT * INTO v_return_record FROM returns WHERE id = p_return_id;
+  
+  FOR v_order_item IN
+    SELECT * FROM order_items WHERE order_id = v_return_record.order_id
+  LOOP
+    UPDATE products 
+    SET stock_quantity = stock_quantity + v_order_item.quantity
+    WHERE id = v_order_item.product_id;
+  END LOOP;
+  
+  UPDATE returns SET status = 'approved' WHERE id = p_return_id;
+  RETURN true;
+END;
+$$;
 
 -- =====================================================
 -- SECTION 15: DOCUMENTATION COMMENTS
@@ -1062,7 +1321,38 @@ COMMENT ON FUNCTION public.validate_coupon IS 'Validates a coupon code against o
 COMMENT ON FUNCTION public.create_order_with_items IS 'Atomically creates an order with items, validates stock, applies discounts, and updates inventory.';
 COMMENT ON FUNCTION public.is_admin IS 'Checks if the current authenticated user has admin role.';
 COMMENT ON FUNCTION public.has_role IS 'Checks if a specific user has a specific role.';
+COMMENT ON FUNCTION public.calculate_order_total IS 'Calculates order total with tax and shipping based on subtotal.';
+COMMENT ON FUNCTION public.get_active_products_count IS 'Returns count of all active products in the system.';
+COMMENT ON FUNCTION public.get_total_orders_count IS 'Returns total number of orders placed.';
+COMMENT ON FUNCTION public.get_total_revenue IS 'Returns total revenue from paid orders.';
+COMMENT ON FUNCTION public.get_low_stock_products IS 'Returns list of products with stock below threshold.';
+COMMENT ON FUNCTION public.search_products IS 'Full-text search for products by name, description, or category.';
+COMMENT ON FUNCTION public.get_best_selling_products IS 'Returns best-selling products sorted by total quantity sold.';
+COMMENT ON FUNCTION public.update_stock_after_return IS 'Updates product stock when a return is approved.';
+
+COMMENT ON TABLE public.about_content IS 'Stores editable content for the About page including hero, story, owner, showroom, and stats sections.';
+COMMENT ON TABLE public.store_settings IS 'Key-value store for global store configuration and settings.';
+COMMENT ON TABLE public.footer_items IS 'Manages footer navigation links organized by section.';
+
+-- =====================================================
+-- SECTION 16: INITIALIZATION COMPLETE
+-- =====================================================
+
+-- Set admin email for new user handler (update with your admin email)
+-- ALTER SYSTEM SET "app.settings.admin_email" = 'admin@guptatraders.com';
+-- SELECT pg_reload_conf();
+
+-- Verify setup
 
 -- =====================================================
 -- SETUP COMPLETE
 -- =====================================================
+
+-- Database setup is now complete!
+-- Next steps:
+-- 1. Update admin email in handle_new_user function settings
+-- 2. Set up storage bucket permissions in Supabase console
+-- 3. Configure Firebase if needed
+-- 4. Initialize default product categories
+-- 5. Test admin login and product creation
+-- 6. Configure email notifications if required

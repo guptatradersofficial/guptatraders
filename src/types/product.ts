@@ -3,7 +3,8 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  price: number;
+  price: number; // GST-exclusive base price (displayed to customers)
+  gst_inclusive_price?: number; // GST-inclusive price (entered by admin)
   compare_at_price: number | null;
   description: string | null;
   short_description: string | null;

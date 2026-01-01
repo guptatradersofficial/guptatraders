@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { useAdminOrders, useUpdateOrderStatus, useDeleteOrder, OrderStatus, PaymentStatus } from '@/hooks/useOrders';
+import { useAdminOrders, useUpdateOrderStatus, useDeleteOrder, OrderStatus, PaymentStatus, OrderItem } from '@/hooks/useOrders';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { formatPrice } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -158,7 +158,7 @@ export default function AdminOrders() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const getShippingAddress = (order: any): ShippingAddress => {
+  const getShippingAddress = (order: Order): ShippingAddress => {
     return (order.shipping_address as ShippingAddress) || {};
   };
 
@@ -560,7 +560,7 @@ export default function AdminOrders() {
                     Order Items ({selectedOrder.items?.length || 0})
                   </h4>
                   <div className="space-y-2">
-                    {selectedOrder.items?.map((item: any) => (
+                    {selectedOrder.items?.map((item: OrderItem) => (
                       <div key={item.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-xl">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">

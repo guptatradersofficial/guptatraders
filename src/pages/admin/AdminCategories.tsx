@@ -89,7 +89,7 @@ export default function AdminCategories() {
     setIsDialogOpen(true);
   };
 
-  const handleOpenEdit = (category: any) => {
+  const handleOpenEdit = (category: Category) => {
     setEditingCategory(category);
     setFormData({
       name: category.name || '',

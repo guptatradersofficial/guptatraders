@@ -98,7 +98,7 @@ export default function AdminCoupons() {
     setEditingCoupon(null);
   };
 
-  const handleEdit = (coupon: any) => {
+  const handleEdit = (coupon: Coupon) => {
     setEditingCoupon(coupon);
     setFormData({
       code: coupon.code,

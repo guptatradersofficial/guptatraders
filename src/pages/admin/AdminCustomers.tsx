@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
+import { Order } from '@/hooks/useOrders';
 import { 
   Search, 
   Users, 
@@ -366,7 +367,7 @@ export default function AdminCustomers() {
                 <h4 className="font-semibold mb-3">Order History</h4>
                 {customerOrders.length > 0 ? (
                   <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {customerOrders.map((order: any) => (
+                    {customerOrders.map((order: Order) => (
                       <div key={order.id} className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
                         <div>
                           <p className="font-medium">{order.order_number}</p>

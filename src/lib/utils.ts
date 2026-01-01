@@ -15,6 +15,100 @@ export function formatPrice(price: number): string {
 }
 
 /**
+ * Get GST rate as decimal (e.g., 0.18 for 18%)
+ * Fetches from Admin Settings, defaults to 18%
+ * 
+ * @param taxRateFromSettings - Tax rate from store settings as string (e.g., '18')
+ * @returns GST rate as decimal (e.g., 0.18)
+ */
+export function getGstRate(taxRateFromSettings?: string | null): number {
+  if (!taxRateFromSettings) return 0.18; // Default to 18%
+  const rate = parseFloat(taxRateFromSettings);
+  return isNaN(rate) ? 0.18 : rate / 100;
+}
+
+/**
+ * Get GST percentage for display (e.g., 18 for 18%)
+ * 
+ * @param taxRateFromSettings - Tax rate from store settings as string (e.g., '18')
+ * @returns GST percentage (e.g., 18)
+ */
+export function getGstPercentage(taxRateFromSettings?: string | null): number {
+  if (!taxRateFromSettings) return 18; // Default to 18%
+  const rate = parseFloat(taxRateFromSettings);
+  return isNaN(rate) ? 18 : rate;
+}
+
+/**
+ * DEPRECATED: Legacy function kept for backward compatibility
+ * Calculate GST-exclusive (base) price from GST-inclusive price
+ */
+export function calculateBasePrice(gstInclusivePrice: number): number {
+  return Math.round((gstInclusivePrice / 1.18) * 100) / 100;
+}
+
+/**
+ * DEPRECATED: Legacy function kept for backward compatibility
+ * Calculate GST-inclusive price from GST-exclusive base price
+ */
+export function calculateGstInclusivePrice(basePrice: number): number {
+  return Math.round(basePrice * 1.18 * 100) / 100;
+}
+
+/**
+ * DEPRECATED: Legacy function kept for backward compatibility
+ * Calculate GST amount from base price
+ */
+export function calculateGstAmount(basePrice: number): number {
+  return Math.round(basePrice * 0.18 * 100) / 100;
+}
+
+/**
+ * DEPRECATED: Legacy function kept for backward compatibility
+ * Extract GST amount from GST-inclusive price
+ */
+export function extractGstAmount(gstInclusivePrice: number): number {
+  const basePrice = calculateBasePrice(gstInclusivePrice);
+  return Math.round((gstInclusivePrice - basePrice) * 100) / 100;
+}
+
+/**
+ * DEPRECATED: Legacy interface for backward compatibility
+ * Get pricing breakdown for display
+ */
+export interface PricingBreakdown {
+  basePrice: number;
+  gstAmount: number;
+  totalPrice: number;
+}
+
+/**
+ * DEPRECATED: Legacy function for backward compatibility
+ */
+export function getPricingBreakdown(gstInclusivePrice: number): PricingBreakdown {
+  const basePrice = calculateBasePrice(gstInclusivePrice);
+  const gstAmount = calculateGstAmount(basePrice);
+  return {
+    basePrice,
+    gstAmount,
+    totalPrice: gstInclusivePrice,
+  };
+}
+
+/**
+ * Format price with GST information for display
+ * Example: ₹5,000 (includes 18% GST)
+ * 
+ * @param price - The display price (which includes GST)
+ * @param gstPercentage - GST percentage from Admin Settings
+ * @returns Formatted string with GST info
+ */
+export function formatPriceWithGst(price: number, gstPercentage?: number): string {
+  const gst = gstPercentage || 18;
+  return `${formatPrice(price)} (includes ${gst}% GST)`;
+}
+
+/**
  * Store settings for shipping configuration
  */
 export interface ShippingSettings {

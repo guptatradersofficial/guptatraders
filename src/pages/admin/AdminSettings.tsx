@@ -16,6 +16,7 @@ import {
   useUpdateShippingZone,
   useDeleteShippingZone,
   useActivityLogs,
+  ShippingZone,
 } from '@/hooks/useAdmin';
 import { useStoreSettings, useBulkUpdateStoreSettings } from '@/hooks/useStoreSettings';
 import { supabase } from '@/integrations/supabase/client';
@@ -133,7 +134,7 @@ export default function AdminSettings() {
     setEditingZone(null);
   };
 
-  const handleEditZone = (zone: any) => {
+  const handleEditZone = (zone: ShippingZone) => {
     setEditingZone(zone);
     setZoneForm({
       name: zone.name,

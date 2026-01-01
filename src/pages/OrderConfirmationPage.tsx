@@ -6,7 +6,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { useOrder } from '@/hooks/useOrders';
+import { useOrder, OrderItem } from '@/hooks/useOrders';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { formatPrice } from '@/lib/utils';
 import { escapeHtml } from '@/lib/sanitize';
@@ -253,7 +253,7 @@ export default function OrderConfirmationPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items?.map((item: any) => (
+                  {order.items?.map((item: OrderItem) => (
                     <tr key={item.id} className="border-b">
                       <td className="py-3">
                         <p className="text-sm font-medium">{item.product_name}</p>
@@ -274,30 +274,29 @@ export default function OrderConfirmationPage() {
             <div className="summary bg-muted/30 rounded-lg p-4">
               <div className="space-y-2">
                 <div className="summary-row flex justify-between text-sm">
-                  <span>Subtotal</span>
-                  <span>{formatPrice(Number(order.subtotal))}</span>
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-right">
+                    <div className="font-medium">{formatPrice(Number(order.subtotal))}</div>
+                    <div className="text-xs text-amber-600 font-medium">(includes {storeSettings?.tax_rate || '18'}% GST)</div>
+                  </span>
                 </div>
                 <div className="summary-row flex justify-between text-sm">
-                  <span>Tax (18% GST)</span>
-                  <span>{formatPrice(Number(order.tax_amount))}</span>
-                </div>
-                <div className="summary-row flex justify-between text-sm">
-                  <span>Shipping</span>
+                  <span className="text-muted-foreground">Shipping</span>
                   <span>
                     {Number(order.shipping_amount) === 0 
-                      ? 'Free' 
+                      ? <span className="text-green-600 font-medium">Free</span>
                       : formatPrice(Number(order.shipping_amount))}
                   </span>
                 </div>
                 {Number(order.discount_amount) > 0 && (
                   <div className="summary-row flex justify-between text-sm text-green-600">
-                    <span>Discount</span>
+                    <span className="font-medium">Discount Applied</span>
                     <span>-{formatPrice(Number(order.discount_amount))}</span>
                   </div>
                 )}
                 <Separator className="my-2" />
                 <div className="summary-total flex justify-between text-lg font-bold">
-                  <span>Total Amount</span>
+                  <span>Total Amount Paid</span>
                   <span>{formatPrice(Number(order.total_amount))}</span>
                 </div>
               </div>

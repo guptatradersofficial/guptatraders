@@ -16,7 +16,7 @@ import { useShippingZones } from '@/hooks/useAdmin';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { formatPrice, calculateShippingAmount, ShippingBreakdown, ShippingZone, ShippingSettings } from '@/lib/utils';
+import { formatPrice, calculateShippingAmount, ShippingBreakdown, ShippingZone, ShippingSettings, formatPriceWithGst, getGstPercentage } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -83,8 +83,14 @@ export default function CheckoutPage() {
   });
 
   const cartItems = getCartItems();
-  const subtotal = getCartTotal();
-  const taxAmount = subtotal * 0.18; // 18% GST
+  const subtotal = getCartTotal(); // Total price (already includes GST configured by admin)
+  
+  // Get GST percentage from Admin Settings
+  const gstPercentage = getGstPercentage(storeSettings?.tax_rate);
+  
+  // In the new pricing model, prices shown are GST-inclusive
+  // No additional GST calculation or addition needed
+  // The subtotal already contains the GST configured by admin
   
   // Convert store settings to ShippingSettings type
   const shippingSettings: ShippingSettings | undefined = storeSettings ? {
@@ -105,7 +111,10 @@ export default function CheckoutPage() {
   const shippingBreakdown: ShippingBreakdown | null = shippingResult.breakdown;
   
   const discountAmount = appliedCoupon?.valid ? appliedCoupon.discount_amount : 0;
-  const totalAmount = subtotal + taxAmount + shippingAmount - discountAmount;
+  
+  // Final calculation: Price (already includes configured GST) + Shipping - Discount
+  // No additional GST is added; the price shown is the final payable amount
+  const totalAmount = subtotal + shippingAmount - discountAmount;
 
   // Fetch user addresses
   useEffect(() => {
@@ -687,11 +696,10 @@ export default function CheckoutPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>{formatPrice(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax (18% GST)</span>
-                    <span>{formatPrice(taxAmount)}</span>
+                    <span className="text-right">
+                      <div>{formatPrice(subtotal)}</div>
+                      <div className="text-xs text-amber-600 font-medium">(includes {gstPercentage}% GST)</div>
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Shipping</span>
@@ -719,7 +727,7 @@ export default function CheckoutPage() {
                 <Separator />
 
                 <div className="flex justify-between font-semibold text-lg">
-                  <span>Total</span>
+                  <span>Total Amount (Payable)</span>
                   <span>{formatPrice(totalAmount)}</span>
                 </div>
 

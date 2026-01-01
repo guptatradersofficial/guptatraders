@@ -87,25 +87,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const cartItems: CartItem[] = (data || [])
         .filter((item: any) => item.product) // Filter out items with deleted products
-        .map((item: any) => ({
-          productId: item.product_id,
-          quantity: Math.min(item.quantity, item.product.stock_quantity), // Adjust to available stock
-          product: {
-            id: item.product.id,
-            name: item.product.name,
-            slug: item.product.slug,
-            price: Number(item.product.price),
-            compare_at_price: item.product.compare_at_price ? Number(item.product.compare_at_price) : null,
-            stock_quantity: item.product.stock_quantity,
-            material: item.product.material,
-            category: item.product.category,
-            images: (item.product.images || []).sort((a: any, b: any) => {
-              if (a.is_primary && !b.is_primary) return -1;
-              if (!a.is_primary && b.is_primary) return 1;
-              return (a.sort_order || 0) - (b.sort_order || 0);
-            }),
-          },
-        }));
+        .map((item: any) => {
+          // Type assertion needed for product relation that may not be fully typed
+          const product = item.product as any;
+          return {
+            productId: item.product_id,
+            quantity: Math.min(item.quantity, product?.stock_quantity || 0),
+            product: {
+              id: product?.id,
+              name: product?.name,
+              slug: product?.slug,
+              price: Number(product?.price),
+              compare_at_price: product?.compare_at_price ? Number(product?.compare_at_price) : null,
+              stock_quantity: product?.stock_quantity,
+              material: product?.material,
+              category: product?.category,
+              images: (product?.images || []).sort((a: any, b: any) => {
+                if (a.is_primary && !b.is_primary) return -1;
+                if (!a.is_primary && b.is_primary) return 1;
+                return (a.sort_order || 0) - (b.sort_order || 0);
+              }),
+            },
+          };
+        });
 
       setItems(cartItems);
     } catch (error) {
@@ -346,10 +350,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Get cart total
+  // Get cart total (GST-exclusive base price)
+  // At checkout, GST will be added to this total
   const getCartTotal = useCallback(() => {
     return items.reduce((total, item) => {
-      const price = item.product?.price || 0;
+      const price = item.product?.price || 0; // This is GST-exclusive base price
       return total + price * item.quantity;
     }, 0);
   }, [items]);

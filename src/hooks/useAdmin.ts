@@ -332,7 +332,7 @@ export function useCreateProductVariant() {
         .from('product_variants')
         .insert({
           ...variant,
-          attributes: variant.attributes as any,
+          attributes: variant.attributes as Record<string, unknown>,
         })
         .select()
         .single();
@@ -360,7 +360,7 @@ export function useUpdateProductVariant() {
         .from('product_variants')
         .update({
           ...variant,
-          attributes: variant.attributes as any,
+          attributes: variant.attributes as Record<string, unknown>,
         })
         .eq('id', id)
         .select()
@@ -509,7 +509,9 @@ export function useCustomers() {
       if (error) throw error;
       return data.map(customer => ({
         ...customer,
-        order_count: (customer.orders as any)?.[0]?.count || 0,
+        order_count: Array.isArray(customer.orders) && customer.orders.length > 0 
+          ? (customer.orders[0] as { count: number }).count 
+          : 0,
       })) as Customer[];
     },
   });
