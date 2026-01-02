@@ -1,5 +1,0 @@
-# Ads.txt file for Gupta Traders
-# Reference: https://iabtechlab.com/ads-txt/
-
-# Add your ad network details here if using any advertising networks
-# Format: domain, account-id, relationship-type, certification-authority-id

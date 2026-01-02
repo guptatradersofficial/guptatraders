@@ -159,9 +159,10 @@ function updateMetaTags(data: {
     if (data.product.category) {
       updateMetaTag('property', 'product:category', data.product.category);
     }
-  rating?: number;
-  reviewCount?: number;
-}) {
+  }
+}
+
+export function generateProductStructuredData(product: any) {
   const image = product.images?.[0]?.image_url || `${BASE_URL}/placeholder.svg`;
   const availability = product.stock_quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
   
@@ -226,47 +227,10 @@ function updateMetaTags(data: {
       reviewCount: product.reviewCount?.toString() || '0',
     },
     additionalProperty: additionalProperties,
-  };   price: product.price,
-      priceCurrency: 'INR',
-      referenceQuantity: {
-        '@type': 'QuantitativeValue',
-        value: 1,
-        unitCode: 'C62', // unit
-      },
-    };
-  }
-
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    description: product.description || `${product.name} - Premium furniture from Gupta Traders`,
-    image: product.images?.map(img => img.image_url) || [image],
-    sku: product.sku || product.id,
-    brand: {
-      '@type': 'Brand',
-      name: product.brand || 'Gupta Traders',
-    },
-    category: product.category?.name || 'Furniture',
-    offers: offer,
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.5',
-      reviewCount: '0',
-    },
   };
 
-  if (product.material) {
-    structuredData.additionalProperty = [
-      {
-        '@type': 'PropertyValue',
-        name: 'Material',
-        value: product.material,
-      },
-    ];
-  }
-
- 
+  return structuredData;
+}
 
 export function generateOrganizationStructuredData() {
   return {
@@ -349,7 +313,6 @@ export function generateLocalBusinessStructuredData() {
       closes: '20:00',
     },
   };
-} return structuredData;
 }
 
 export function generateBreadcrumbStructuredData(items: Array<{ name: string; url: string }>) {
