@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, ShoppingCart, Trash2, Loader2 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCart } from '@/context/CartContext';
@@ -62,6 +63,12 @@ export default function WishlistPage() {
   if (isLoading) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'My Wishlist',
+          description: 'View your saved wishlist items. Save furniture you love and purchase later at Gupta Traders.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="container py-16 flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -72,6 +79,12 @@ export default function WishlistPage() {
   if (items.length === 0 || wishlistProducts.length === 0) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'My Wishlist',
+          description: 'Your wishlist is empty. Browse our furniture collection and save your favorite items for later.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="container py-16 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -96,6 +109,12 @@ export default function WishlistPage() {
 
   return (
     <Layout>
+      <SEO data={{
+        title: 'My Wishlist',
+        description: `Your wishlist with ${items.length} item${items.length !== 1 ? 's' : ''}. Premium furniture saved for later from Gupta Traders.`,
+        url: window.location.href,
+        type: 'website',
+      }} />
       <div className="container py-8">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

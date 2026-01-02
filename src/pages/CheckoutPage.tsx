@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Plus, Ticket, ShoppingBag, Phone, User, AlertCircle, FileText, Navigation } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -272,6 +273,12 @@ export default function CheckoutPage() {
 
   return (
     <Layout>
+      <SEO data={{
+        title: 'Checkout - Complete Your Order',
+        description: 'Secure checkout for your furniture order. Review your cart, enter delivery address, and place your order at Gupta Traders.',
+        url: window.location.href,
+        type: 'website',
+      }} />
       <div className="container py-8">
         <Button variant="ghost" asChild className="mb-6">
           <Link to="/cart">

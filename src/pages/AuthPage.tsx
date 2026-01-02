@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/context/AuthContext';
 import { Layout } from '@/components/layout/Layout';
+import { SEO } from '@/components/SEO';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -200,6 +201,12 @@ export default function AuthPage() {
   if (authLoading) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'Sign In / Sign Up',
+          description: 'Create an account or sign in to your Gupta Traders account. Manage orders, addresses, and wishlist.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
@@ -211,6 +218,12 @@ export default function AuthPage() {
   if (isPasswordResetMode) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'Reset Password',
+          description: 'Reset your Gupta Traders account password.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -323,6 +336,12 @@ export default function AuthPage() {
   if (signupEmail) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'Verify Your Email',
+          description: 'Verify your email address to complete your Gupta Traders account registration.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -390,6 +409,13 @@ export default function AuthPage() {
 
   return (
     <Layout>
+      <SEO data={{
+        title: 'Sign In / Sign Up | Gupta Traders',
+        description: 'Create an account or sign in to your Gupta Traders account. Access your orders, wishlist, and saved addresses.',
+        keywords: 'sign in, sign up, login, register, account',
+        url: window.location.href,
+        type: 'website',
+      }} />
       <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

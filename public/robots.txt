@@ -1,0 +1,31 @@
+# Robots.txt for Gupta Traders - Premium Furniture Store
+# https://www.guptatraders.net
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /auth
+Disallow: /checkout
+Disallow: /profile
+Disallow: /api/
+Disallow: /admin/
+Disallow: /?*sort=
+Disallow: /?*filter=
+Allow: /products
+Allow: /product/
+Allow: /sitemap.xml
+
+# Slow down aggressive crawlers
+User-agent: AhrefsBot
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Google, Bing, and other major search engines
+User-agent: Googlebot
+User-agent: Bingbot
+Crawl-delay: 0
+
+# Sitemaps
+Sitemap: https://www.guptatraders.net/sitemap.xml
+Sitemap: https://www.guptatraders.net/sitemap-products.xml
+Sitemap: https://www.guptatraders.net/sitemap-categories.xml

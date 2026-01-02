@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Navigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
+import { SEO } from '@/components/SEO';
 import { useAuth } from '@/context/AuthContext';
 import { useUserOrders, Order, OrderStatus, PaymentStatus, OrderItem } from '@/hooks/useOrders';
 import { useStoreSettings } from '@/hooks/useStoreSettings';
@@ -378,6 +379,12 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'My Account',
+          description: 'View and manage your account profile, orders, addresses, and saved information at Gupta Traders.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="container py-12 flex items-center justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
@@ -391,6 +398,12 @@ export default function ProfilePage() {
 
   return (
     <Layout>
+      <SEO data={{
+        title: 'My Account | User Profile',
+        description: 'Manage your Gupta Traders account. View orders, saved addresses, and profile information.',
+        url: window.location.href,
+        type: 'website',
+      }} />
       <div className="container py-8 max-w-6xl">
         <h1 className="text-3xl font-display font-bold mb-8">My Account</h1>
 

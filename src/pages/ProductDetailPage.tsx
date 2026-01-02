@@ -16,6 +16,7 @@ import {
   Package,
 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -145,8 +146,36 @@ export default function ProductDetailPage() {
     setCurrentImageIndex(prev => (prev - 1 + images.length) % images.length);
   };
 
+  // Generate SEO data
+  const seoData = {
+    title: product.name,
+    description: product.short_description || `Buy ${product.name} at Gupta Traders. Premium quality furniture with free delivery and 5-year warranty. ₹${product.price.toLocaleString('en-IN')}`,
+    keywords: `${product.name}, ${product.category?.name || 'furniture'}, buy online, Gupta Traders, furniture store, ${product.material || ''}`,
+    image: currentImage,
+    url: window.location.href,
+    type: 'product' as const,
+    product: {
+      name: product.name,
+      price: product.price,
+      currency: 'INR',
+      availability: inStock ? 'in stock' : 'out of stock',
+      condition: 'new',
+      brand: 'Gupta Traders',
+      category: product.category?.name,
+      rating: 4.5,
+      reviewCount: 0,
+      images: images.map(img => img.image_url),
+    },
+  };
+
   return (
     <Layout>
+      <SEO data={seoData} product={product} breadcrumbs={[
+        { name: 'Home', url: '/' },
+        { name: 'Products', url: '/products' },
+        { name: product.category?.name || 'Furniture', url: `/products?category=${product.category?.slug || ''}` },
+        { name: product.name, url: window.location.href },
+      ]} />
       <div className="container py-4 md:py-8">
         {/* Breadcrumbs - Hidden on mobile */}
         <nav className="hidden md:flex text-sm text-muted-foreground mb-6">

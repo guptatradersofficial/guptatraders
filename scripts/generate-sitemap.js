@@ -31,33 +31,37 @@ async function generateSitemap() {
 
   const urls = [];
 
-  // Homepage
-  urls.push({
-    loc: `${BASE_URL}/`,
-    changefreq: 'daily',
-    priority: '1.0',
-    lastmod: new Date().toISOString().split('T')[0],
-  });
+  // Static pages with priority and change frequency
+  const staticPages = [
+    { loc: '/', changefreq: 'daily', priority: '1.0', label: 'Homepage' },
+    { loc: '/products', changefreq: 'daily', priority: '0.9', label: 'Products' },
+    { loc: '/cart', changefreq: 'weekly', priority: '0.8', label: 'Cart' },
+    { loc: '/wishlist', changefreq: 'weekly', priority: '0.7', label: 'Wishlist' },
+    { loc: '/auth', changefreq: 'monthly', priority: '0.6', label: 'Authentication' },
+  ];
 
-  // Products page
-  urls.push({
-    loc: `${BASE_URL}/products`,
-    changefreq: 'daily',
-    priority: '0.9',
-    lastmod: new Date().toISOString().split('T')[0],
+  staticPages.forEach(page => {
+    urls.push({
+      loc: `${BASE_URL}${page.loc}`,
+      changefreq: page.changefreq,
+      priority: page.priority,
+      lastmod: new Date().toISOString().split('T')[0],
+    });
+    console.log(`✓ Added ${page.label}`);
   });
 
   try {
-    // Fetch categories
+    // Fetch categories with improved error handling
     const { data: categories, error: catError } = await supabase
       .from('categories')
-      .select('slug, updated_at')
-      .eq('is_active', true);
+      .select('id, slug, updated_at, is_active')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
 
     if (catError) {
-      console.error('Error fetching categories:', catError);
-    } else {
-      categories?.forEach(category => {
+      console.warn('Warning: Could not fetch categories:', catError.message);
+    } else if (categories && categories.length > 0) {
+      categories.forEach(category => {
         urls.push({
           loc: `${BASE_URL}/products?category=${category.slug}`,
           changefreq: 'weekly',
@@ -65,18 +69,20 @@ async function generateSitemap() {
           lastmod: category.updated_at ? new Date(category.updated_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         });
       });
+      console.log(`✓ Added ${categories.length} categories`);
     }
 
-    // Fetch products
+    // Fetch products with images and improved structure
     const { data: products, error: prodError } = await supabase
       .from('products')
-      .select('slug, updated_at, images:product_images(image_url)')
-      .eq('is_active', true);
+      .select('id, slug, updated_at, is_active, images:product_images(image_url, alt_text, is_primary)')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
 
     if (prodError) {
-      console.error('Error fetching products:', prodError);
-    } else {
-      products?.forEach(product => {
+      console.warn('Warning: Could not fetch products:', prodError.message);
+    } else if (products && products.length > 0) {
+      products.forEach(product => {
         const urlEntry = {
           loc: `${BASE_URL}/product/${product.slug}`,
           changefreq: 'weekly',
@@ -84,19 +90,26 @@ async function generateSitemap() {
           lastmod: product.updated_at ? new Date(product.updated_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         };
 
-        // Add image if available
+        // Add primary or first image if available
         if (product.images && product.images.length > 0) {
-          urlEntry.image = product.images[0].image_url;
+          const primaryImage = product.images.find((img) => img.is_primary);
+          const imageUrl = primaryImage?.image_url || product.images[0]?.image_url;
+          if (imageUrl) {
+            urlEntry.image = imageUrl;
+            urlEntry.imageAlt = primaryImage?.alt_text || product.images[0]?.alt_text;
+          }
         }
 
         urls.push(urlEntry);
       });
+      console.log(`✓ Added ${products.length} products`);
     }
 
-    // Generate XML
+    // Generate main sitemap
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
@@ -106,7 +119,8 @@ ${urls.map(url => `  <url>
     <priority>${url.priority}</priority>
     <lastmod>${url.lastmod}</lastmod>${url.image ? `
     <image:image>
-      <image:loc>${escapeXml(url.image)}</image:loc>
+      <image:loc>${escapeXml(url.image)}</image:loc>${url.imageAlt ? `
+      <image:title>${escapeXml(url.imageAlt)}</image:title>` : ''}
     </image:image>` : ''}
   </url>`).join('\n')}
 </urlset>`;
@@ -115,8 +129,23 @@ ${urls.map(url => `  <url>
     const outputPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
     fs.writeFileSync(outputPath, sitemap, 'utf8');
 
-    console.log(`✅ Sitemap generated successfully with ${urls.length} URLs`);
+    console.log(`✅ Main sitemap generated successfully with ${urls.length} URLs`);
     console.log(`📄 Saved to: ${outputPath}`);
+
+    // Generate sitemap index for better structure
+    const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${BASE_URL}/sitemap.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+  </sitemap>
+</sitemapindex>`;
+
+    const sitemapIndexPath = path.join(__dirname, '..', 'public', 'sitemap-index.xml');
+    fs.writeFileSync(sitemapIndexPath, sitemapIndex, 'utf8');
+    console.log(`✅ Sitemap index generated`);
+    console.log(`📄 Saved to: ${sitemapIndexPath}`);
+
   } catch (error) {
     console.error('Error generating sitemap:', error);
     process.exit(1);

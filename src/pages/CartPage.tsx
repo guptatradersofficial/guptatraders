@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, LogIn } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -50,6 +51,12 @@ export default function CartPage() {
   if (isLoading) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'Shopping Cart',
+          description: 'View and manage your shopping cart. Proceed to checkout to complete your purchase.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="container py-16 flex justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
@@ -60,6 +67,12 @@ export default function CartPage() {
   if (cartItems.length === 0) {
     return (
       <Layout>
+        <SEO data={{
+          title: 'Shopping Cart',
+          description: 'Your shopping cart is empty. Browse our collection of premium furniture and add items to your cart.',
+          url: window.location.href,
+          type: 'website',
+        }} />
         <div className="container py-16 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -87,6 +100,12 @@ export default function CartPage() {
 
   return (
     <Layout>
+      <SEO data={{
+        title: 'Shopping Cart',
+        description: `Your cart with ${cartItems.length} item${cartItems.length !== 1 ? 's' : ''}. Proceed to checkout to complete your purchase from Gupta Traders.`,
+        url: window.location.href,
+        type: 'website',
+      }} />
       <div className="container py-8">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

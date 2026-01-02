@@ -79,6 +79,39 @@ export default function ProductsPage() {
   const { data: products, isLoading: productsLoading } = useProducts({ search: searchQuery });
   const { data: categories, isLoading: categoriesLoading } = useCategories();
 
+  // Generate SEO data based on category and search
+  const getSEOData = () => {
+    if (searchQuery) {
+      return {
+        title: `${searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1)} Furniture - Search Results`,
+        description: `Search results for "${searchQuery}". Shop premium ${searchQuery} furniture at Gupta Traders. Free delivery, 5-year warranty.`,
+        keywords: `${searchQuery} furniture, buy ${searchQuery}, ${searchQuery} online, premium ${searchQuery}`,
+        url: window.location.href,
+        type: 'category' as const,
+      };
+    }
+    
+    if (selectedCategories.length > 0) {
+      const categoryName = categories?.find(c => c.slug === selectedCategories[0])?.name || selectedCategories[0];
+      return {
+        title: `${categoryName} | Premium Furniture Collection`,
+        description: `Shop our exclusive collection of ${categoryName.toLowerCase()} furniture. Premium quality, affordable prices, free delivery, 5-year warranty.`,
+        keywords: `${categoryName.toLowerCase()} furniture, buy ${categoryName.toLowerCase()}, ${categoryName.toLowerCase()} online, premium furniture`,
+        url: window.location.href,
+        type: 'category' as const,
+        category: categoryName,
+      };
+    }
+
+    return {
+      title: 'Furniture Store | Buy Online Sofas, Beds, Dining Tables',
+      description: 'Shop premium furniture at Gupta Traders. Explore sofas, beds, dining tables, wardrobes, office furniture & more. Free delivery, 5-year warranty, easy returns.',
+      keywords: 'furniture, furniture store, buy furniture online, home furniture, office furniture, sofas, beds, dining tables',
+      url: window.location.href,
+      type: 'category' as const,
+    };
+  };
+
   const filteredProducts = useMemo(() => {
     if (!products) return [];
     
