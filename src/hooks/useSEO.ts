@@ -90,6 +90,28 @@ function updateMetaTags(data: {
   modifiedDate?: string;
   alternateLanguages?: Array<{ hrefLang: string; href: string }>;
 }) {
+  // Helper function to update/create meta tags
+  const updateMetaTag = (nameOrProperty: string, nameValue: string, content: string) => {
+    let element = document.querySelector(`meta[${nameOrProperty}="${nameValue}"]`) as HTMLMetaElement;
+    if (!element) {
+      element = document.createElement('meta');
+      element.setAttribute(nameOrProperty, nameValue);
+      document.head.appendChild(element);
+    }
+    element.content = content;
+  };
+
+  // Helper function for link tags (canonical)
+  const updateLinkTag = (rel: string, href: string) => {
+    let element = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement;
+    if (!element) {
+      element = document.createElement('link');
+      element.rel = rel;
+      document.head.appendChild(element);
+    }
+    element.href = href;
+  };
+
   // Primary Meta Tags
   document.title = data.title;
   updateMetaTag('name', 'title', data.title);
@@ -101,7 +123,7 @@ function updateMetaTags(data: {
   updateMetaTag('name', 'viewport', 'width=device-width, initial-scale=1.0');
   updateMetaTag('name', 'theme-color', '#ffffff');
   updateMetaTag('property', 'og:url', data.url);
-  updateMetaTag('rel', 'canonical', data.url);
+  updateLinkTag('canonical', data.url);
 
   // Open Graph / Facebook
   updateMetaTag('property', 'og:type', data.type);
@@ -141,7 +163,7 @@ function updateMetaTags(data: {
     data.alternateLanguages.forEach(alt => {
       const link = document.createElement('link');
       link.rel = 'alternate';
-      link.hrefLang = alt.hrefLang;
+      link.setAttribute('hreflang', alt.hrefLang);
       link.href = alt.href;
       document.head.appendChild(link);
     });
