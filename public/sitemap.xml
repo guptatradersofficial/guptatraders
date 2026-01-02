@@ -5,7 +5,7 @@
 
   <!-- Homepage - Update frequency: Daily, Priority: Highest -->
   <url>
-    <loc>https://www.guptatraders.online/</loc>
+    <loc>https://www.guptatraders.net/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -13,7 +13,7 @@
 
   <!-- Products Page - Main category page -->
   <url>
-    <loc>https://www.guptatraders.online/products</loc>
+    <loc>https://www.guptatraders.net/products</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
@@ -21,7 +21,7 @@
 
   <!-- About Us / Company Info -->
   <url>
-    <loc>https://www.guptatraders.online/about</loc>
+    <loc>https://www.guptatraders.net/about</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -29,7 +29,7 @@
 
   <!-- Contact Page -->
   <url>
-    <loc>https://www.guptatraders.online/contact</loc>
+    <loc>https://www.guptatraders.net/contact</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -37,28 +37,28 @@
 
   <!-- Legal Pages -->
   <url>
-    <loc>https://www.guptatraders.online/privacy-policy</loc>
+    <loc>https://www.guptatraders.net/privacy-policy</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://www.guptatraders.online/terms-of-service</loc>
+    <loc>https://www.guptatraders.net/terms-of-service</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://www.guptatraders.online/refund-policy</loc>
+    <loc>https://www.guptatraders.net/refund-policy</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://www.guptatraders.online/shipping-policy</loc>
+    <loc>https://www.guptatraders.net/shipping-policy</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
@@ -66,7 +66,7 @@
 
   <!-- Blog/Resources Section (if applicable) -->
   <url>
-    <loc>https://www.guptatraders.online/blog</loc>
+    <loc>https://www.guptatraders.net/blog</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -74,28 +74,28 @@
 
   <!-- Category Pages (if applicable) -->
   <url>
-    <loc>https://www.guptatraders.online/products?category=sofas</loc>
+    <loc>https://www.guptatraders.net/products?category=sofas</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.guptatraders.online/products?category=beds</loc>
+    <loc>https://www.guptatraders.net/products?category=beds</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-      <loc>https://www.guptatraders.online/products?category=dining</loc>
+      <loc>https://www.guptatraders.net/products?category=dining</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.guptatraders.online/products?category=storage</loc>
+    <loc>https://www.guptatraders.net/products?category=almirah</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -103,7 +103,7 @@
 
   <!-- User Authentication Pages (intentionally low priority) -->
   <url>
-    <loc>https://www.guptatraders.online/auth</loc>
+    <loc>https://www.guptatraders.net/auth</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
@@ -111,7 +111,7 @@
 
   <!-- Sitemap Index Page -->
   <url>
-    <loc>https://www.guptatraders.online/sitemap</loc>
+    <loc>https://www.guptatraders.net/sitemap</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
