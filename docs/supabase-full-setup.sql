@@ -1172,7 +1172,12 @@ INSERT INTO about_content (section_key, title, content, sort_order, is_active) V
   ('stat_years', '35+', 'Years', 10, true),
   ('stat_customers', '50K+', 'Happy Customers', 11, true),
   ('stat_products', '100K+', 'Products Delivered', 12, true),
-  ('stat_cities', '200+', 'Cities Served', 13, true)
+  ('stat_cities', '200+', 'Cities Served', 13, true),
+  ('showroom_address', 'Address', 'Infront of Ram Janki mandir, mahadeva road, ara. 802301', 15, true),
+  ('showroom_phone', 'Phone', '+91 9470071791', 16, true),
+  ('showroom_email', 'Email', 'guptatradersofficials@gmail.com', 17, true),
+  ('showroom_hours_weekday', 'Working Hours (Weekday)', 'Mon - Sat: 9:00 AM - 8:00 PM', 18, true),
+  ('showroom_hours_weekend', 'Working Hours (Weekend)', 'Sun: 9:00 AM - 8:00 PM', 19, true)
 ON CONFLICT (section_key) DO NOTHING;
 
 -- Insert default footer items
@@ -1181,9 +1186,8 @@ INSERT INTO footer_items (section, title, url, sort_order, is_active) VALUES
   ('quick_links', 'Products', '/products', 2, true),
   ('quick_links', 'About Us', '/about', 3, true),
   ('quick_links', 'Contact', '/contact', 4, true),
-  ('customer_service', 'Shipping Policy', '/shipping-policy', 1, true),
-  ('customer_service', 'Returns & Refunds', '/returns-refunds', 2, true),
-  ('customer_service', 'FAQ', '/faq', 3, true),
+  ('customer_service', 'Shipping & Delivery', '/shipping', 1, true),
+  ('customer_service', 'FAQ', '/faq', 2, true),
   ('customer_service', 'Support', '/support', 4, true),
   ('about', 'About Us', '/about', 1, true),
   ('about', 'Careers', '/careers', 2, true),

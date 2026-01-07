@@ -99,7 +99,7 @@ export function Footer() {
                   quickLinks.sort((a, b) => a.sort_order - b.sort_order).map(item => {
                     const url = item.url || '#';
                     const isExternal = url.startsWith('http://') || url.startsWith('https://');
-                    
+
                     if (isExternal) {
                       return (
                         <motion.a
@@ -114,7 +114,7 @@ export function Footer() {
                         </motion.a>
                       );
                     }
-                    
+
                     return (
                       <motion.div key={item.id} whileHover={{ x: 4 }}>
                         <Link
@@ -156,7 +156,7 @@ export function Footer() {
                   customerService.sort((a, b) => a.sort_order - b.sort_order).map(item => {
                     const url = item.url || '#';
                     const isExternal = url.startsWith('http://') || url.startsWith('https://');
-                    
+
                     if (isExternal) {
                       return (
                         <motion.a
@@ -171,7 +171,7 @@ export function Footer() {
                         </motion.a>
                       );
                     }
-                    
+
                     return (
                       <motion.div key={item.id} whileHover={{ x: 4 }}>
                         <Link
@@ -191,12 +191,12 @@ export function Footer() {
                       </Link>
                     </motion.div>
                     <motion.div whileHover={{ x: 4 }}>
-                      <Link to="#" className="text-gray-400 hover:text-orange-600 transition-colors duration-300 text-sm">
-                        Returns & Refunds
+                      <Link to="/shipping" className="text-gray-400 hover:text-orange-600 transition-colors duration-300 text-sm">
+                        Shipping & Delivery
                       </Link>
                     </motion.div>
                     <motion.div whileHover={{ x: 4 }}>
-                      <Link to="#" className="text-gray-400 hover:text-orange-600 transition-colors duration-300 text-sm">
+                      <Link to="/faq" className="text-gray-400 hover:text-orange-600 transition-colors duration-300 text-sm">
                         FAQ
                       </Link>
                     </motion.div>

@@ -83,6 +83,12 @@ export function Header() {
                 >
                   All Products
                 </Link>
+                <Link
+                  to="/contact"
+                  className="text-base sm:text-lg font-medium hover:text-primary transition-colors py-2"
+                >
+                  Contact
+                </Link>
 
                 {/* Mobile Auth Section */}
                 <div className="border-t border-border pt-4 mt-4">
@@ -139,9 +145,9 @@ export function Header() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-1 sm:gap-2 flex-shrink-0 min-w-0">
-            <img 
-              src={logoUrl || logo} 
-              alt={storeName} 
+            <img
+              src={logoUrl || logo}
+              alt={storeName}
               className="h-8 md:h-10 w-auto object-contain flex-shrink-0"
             />
             <span className="font-display text-sm sm:text-lg md:text-2xl font-bold text-primary whitespace-nowrap hidden sm:inline">
@@ -171,6 +177,12 @@ export function Header() {
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               All Products
+            </Link>
+            <Link
+              to="/contact"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
+              Contact
             </Link>
           </nav>
 

@@ -16,6 +16,9 @@ import WishlistPage from "./pages/WishlistPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import AboutPage from "./pages/About";
+import ContactPage from "./pages/Contact";
+import FAQPage from "./pages/FAQ";
+import ShippingPage from "./pages/Shipping";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
@@ -45,6 +48,9 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/faq" element={<FAQPage />} />
+                <Route path="/shipping" element={<ShippingPage />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/product/:slug" element={<ProductDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />
