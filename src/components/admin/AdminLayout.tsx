@@ -16,7 +16,9 @@ import {
   Bell,
   ChevronLeft,
   X,
-  Home
+  Home,
+  FileText,
+  Link2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -37,6 +39,8 @@ const navItems = [
   { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
   { href: '/admin/returns', label: 'Returns', icon: RotateCcw },
   { href: '/admin/notifications', label: 'Notifications', icon: Bell, showBadge: true },
+  { href: '/admin/about', label: 'About Page', icon: FileText },
+  { href: '/admin/footer', label: 'Footer', icon: Link2 },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

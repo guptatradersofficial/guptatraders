@@ -279,25 +279,25 @@ export default function CheckoutPage() {
         url: window.location.href,
         type: 'website',
       }} />
-      <div className="container py-8">
-        <Button variant="ghost" asChild className="mb-6">
-          <Link to="/cart">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Cart
+      <div className="container py-8 px-4 sm:px-6 lg:px-8">
+        <Button variant="ghost" asChild className="mb-6 pl-0">
+          <Link to="/cart" className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-sm sm:text-base">Back to Cart</span>
           </Link>
         </Button>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-display text-3xl md:text-4xl font-bold mb-8"
+          className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-8"
         >
           Checkout
         </motion.h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main checkout form */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 w-full max-w-full overflow-hidden">
             {/* Delivery Address */}
             <Card>
               <CardHeader>

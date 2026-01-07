@@ -115,16 +115,16 @@ export default function WishlistPage() {
         url: window.location.href,
         type: 'website',
       }} />
-      <div className="container py-8">
+      <div className="container px-4 sm:px-6 lg:px-8 py-8 w-full max-w-full overflow-hidden">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-display text-3xl md:text-4xl font-bold mb-8"
+          className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-8"
         >
           My Wishlist ({wishlistProducts.length} items)
         </motion.h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {wishlistProducts.map((product, index) => (
             <motion.div
               key={product.id}

@@ -176,9 +176,9 @@ export default function ProductDetailPage() {
         { name: product.category?.name || 'Furniture', url: `/products?category=${product.category?.slug || ''}` },
         { name: product.name, url: window.location.href },
       ]} />
-      <div className="container py-4 md:py-8">
+      <div className="container px-4 sm:px-6 lg:px-8 py-4 md:py-8 w-full max-w-full overflow-hidden">
         {/* Breadcrumbs - Hidden on mobile */}
-        <nav className="hidden md:flex text-sm text-muted-foreground mb-6">
+        <nav className="hidden md:flex text-sm text-muted-foreground mb-6 w-full">
           <ol className="flex items-center gap-2">
             <li>
               <Link to="/" className="hover:text-foreground transition-colors">
@@ -216,13 +216,13 @@ export default function ProductDetailPage() {
           Back
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 w-full max-w-full overflow-hidden">
           {/* Image gallery */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="space-y-3 md:space-y-4"
+            className="space-y-3 md:space-y-4 w-full max-w-full overflow-hidden"
           >
             <div className="relative aspect-square bg-secondary rounded-xl md:rounded-2xl overflow-hidden">
               <AnimatePresence mode="wait">

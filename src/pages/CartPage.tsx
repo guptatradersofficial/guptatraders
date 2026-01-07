@@ -106,18 +106,18 @@ export default function CartPage() {
         url: window.location.href,
         type: 'website',
       }} />
-      <div className="container py-8">
+      <div className="container py-8 px-4 sm:px-6 lg:px-8">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-display text-3xl md:text-4xl font-bold mb-8"
+          className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-8"
         >
           Shopping Cart
         </motion.h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Cart items */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-4 w-full max-w-full overflow-hidden">
             {cartItems.map((item, index) => (
               <motion.div
                 key={item.productId}

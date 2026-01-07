@@ -15,6 +15,7 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import WishlistPage from "./pages/WishlistPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
+import AboutPage from "./pages/About";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
@@ -24,6 +25,8 @@ import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminReturns from "./pages/admin/AdminReturns";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminAbout from "./pages/admin/AdminAbout";
+import AdminFooterPage from "./pages/admin/AdminFooter";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -41,6 +44,7 @@ const App = () => (
               <ScrollToTop />
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/product/:slug" element={<ProductDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />
@@ -58,6 +62,8 @@ const App = () => (
                 <Route path="/admin/returns" element={<AdminReturns />} />
                 <Route path="/admin/notifications" element={<AdminNotifications />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
+                <Route path="/admin/about" element={<AdminAbout />} />
+                <Route path="/admin/footer" element={<AdminFooterPage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

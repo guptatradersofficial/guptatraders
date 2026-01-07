@@ -46,6 +46,32 @@ import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 
+// Date Input Component with Calendar Icon
+function DateInput({ 
+  value, 
+  onChange, 
+  label,
+  ...props 
+}: { 
+  value: string; 
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  [key: string]: any;
+}) {
+  return (
+    <div className="relative">
+      <Input
+        type="date"
+        value={value}
+        onChange={onChange}
+        className="pr-10"
+        {...props}
+      />
+      <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+    </div>
+  );
+}
+
 export default function AdminCoupons() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -110,8 +136,8 @@ export default function AdminCoupons() {
       maximum_discount: coupon.maximum_discount || 0,
       usage_limit: coupon.usage_limit || 0,
       per_user_limit: coupon.per_user_limit || 0,
-      starts_at: coupon.starts_at ? coupon.starts_at.split('T')[0] : '',
-      expires_at: coupon.expires_at ? coupon.expires_at.split('T')[0] : '',
+      starts_at: coupon.starts_at && typeof coupon.starts_at === 'string' ? coupon.starts_at.split('T')[0] : '',
+      expires_at: coupon.expires_at && typeof coupon.expires_at === 'string' ? coupon.expires_at.split('T')[0] : '',
       is_active: coupon.is_active,
       is_announcement: coupon.is_announcement || false,
     });
@@ -134,13 +160,52 @@ export default function AdminCoupons() {
       is_announcement: formData.is_announcement,
     };
 
-    if (editingCoupon) {
-      await updateCoupon.mutateAsync({ id: editingCoupon.id, ...couponData });
-    } else {
-      await createCoupon.mutateAsync(couponData);
+    try {
+      // ANNOUNCEMENT RULE: Only one coupon can be an announcement at a time
+      if (formData.is_announcement) {
+        // Find any existing announcement coupon (excluding the current one being edited)
+        const existingAnnouncement = coupons.find(
+          c => c.is_announcement && c.id !== editingCoupon?.id
+        );
+        
+        if (existingAnnouncement) {
+          // Automatically disable the previous announcement coupon
+          await updateCoupon.mutateAsync({
+            id: existingAnnouncement.id,
+            is_announcement: false,
+          });
+          
+          toast({
+            title: 'Previous announcement disabled',
+            description: `${existingAnnouncement.code} has been removed from announcements.`,
+          });
+        }
+      }
+
+      // Save the current coupon
+      if (editingCoupon) {
+        await updateCoupon.mutateAsync({ id: editingCoupon.id, ...couponData });
+        toast({
+          title: 'Coupon updated',
+          description: `${formData.code} has been updated successfully.`,
+        });
+      } else {
+        await createCoupon.mutateAsync(couponData);
+        toast({
+          title: 'Coupon created',
+          description: `${formData.code} has been created successfully.`,
+        });
+      }
+      setIsDialogOpen(false);
+      resetForm();
+    } catch (error) {
+      console.error('Error saving coupon:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save coupon. Please try again.',
+        variant: 'destructive',
+      });
     }
-    setIsDialogOpen(false);
-    resetForm();
   };
 
   const copyCode = (code: string) => {
@@ -273,16 +338,14 @@ export default function AdminCoupons() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Starts At</Label>
-                    <Input
-                      type="date"
+                    <DateInput
                       value={formData.starts_at}
                       onChange={(e) => setFormData({ ...formData, starts_at: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>Expires At</Label>
-                    <Input
-                      type="date"
+                    <DateInput
                       value={formData.expires_at}
                       onChange={(e) => setFormData({ ...formData, expires_at: e.target.value })}
                     />
@@ -295,10 +358,14 @@ export default function AdminCoupons() {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                   />
                 </div>
-                <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                  <div>
-                    <Label>Show as Announcement</Label>
-                    <p className="text-xs text-muted-foreground">Display in the promo banner</p>
+                <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border border-amber-200/50">
+                  <div className="space-y-1">
+                    <Label className="text-base">Show as Announcement</Label>
+                    <p className="text-xs text-muted-foreground">
+                      {coupons.some(c => c.is_announcement && c.id !== editingCoupon?.id)
+                        ? `Currently: ${coupons.find(c => c.is_announcement && c.id !== editingCoupon?.id)?.code} is featured`
+                        : 'Display in the promo banner (only one coupon can be announced at a time)'}
+                    </p>
                   </div>
                   <Switch
                     checked={formData.is_announcement}
@@ -370,6 +437,8 @@ export default function AdminCoupons() {
                       key={coupon.id}
                       className={cn(
                         "group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border transition-all duration-200",
+                        coupon.is_announcement 
+                          ? 'bg-amber-50/50 dark:bg-amber-950/20 border-amber-300/50 dark:border-amber-700/40 shadow-sm' :
                         expired 
                           ? 'bg-red-50/50 dark:bg-red-950/10 border-red-200/50 dark:border-red-800/30' 
                           : coupon.is_active
@@ -395,16 +464,16 @@ export default function AdminCoupons() {
                                 <Copy className="h-3 w-3" />
                               </Button>
                             </div>
+                            {coupon.is_announcement && (
+                              <Badge className="bg-amber-600 hover:bg-amber-700 text-white">
+                                <span className="mr-1">⭐</span>Featured
+                              </Badge>
+                            )}
                             {expired ? (
                               <Badge variant="destructive">Expired</Badge>
                             ) : (
                               <Badge variant={coupon.is_active ? 'default' : 'secondary'}>
                                 {coupon.is_active ? 'Active' : 'Inactive'}
-                              </Badge>
-                            )}
-                            {coupon.is_announcement && (
-                              <Badge variant="outline" className="text-amber-600 border-amber-300">
-                                Announcement
                               </Badge>
                             )}
                           </div>

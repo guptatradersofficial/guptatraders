@@ -51,20 +51,20 @@ export function Header() {
       <SaleCountdownBanner />
 
       {/* Main header */}
-      <div className="container">
-        <div className="flex items-center justify-between h-16 md:h-20">
+      <div className="container px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20 gap-2 sm:gap-4">
           {/* Mobile menu */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-80">
-              <nav className="flex flex-col gap-4 mt-8">
+            <SheetContent side="left" className="w-[80vw] sm:w-80 max-w-sm p-0">
+              <nav className="flex flex-col gap-4 mt-8 p-4 sm:p-6">
                 <Link
                   to="/"
-                  className="text-lg font-medium hover:text-primary transition-colors"
+                  className="text-base sm:text-lg font-medium hover:text-primary transition-colors py-2"
                 >
                   Home
                 </Link>
@@ -72,14 +72,14 @@ export function Header() {
                   <Link
                     key={cat.id}
                     to={`/products?category=${cat.slug}`}
-                    className="text-lg font-medium hover:text-primary transition-colors"
+                    className="text-base sm:text-lg font-medium hover:text-primary transition-colors py-2"
                   >
                     {cat.name}
                   </Link>
                 ))}
                 <Link
                   to="/products"
-                  className="text-lg font-medium hover:text-primary transition-colors"
+                  className="text-base sm:text-lg font-medium hover:text-primary transition-colors py-2"
                 >
                   All Products
                 </Link>
@@ -88,48 +88,48 @@ export function Header() {
                 <div className="border-t border-border pt-4 mt-4">
                   {user ? (
                     <>
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <div className="flex items-center gap-3 mb-4 p-2">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                           <span className="text-sm font-medium text-primary">
                             {profile?.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase() || 'U'}
                           </span>
                         </div>
-                        <div>
-                          <p className="font-medium">{profile?.full_name || 'User'}</p>
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm truncate">{profile?.full_name || 'User'}</p>
                           <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                         </div>
                       </div>
                       <Link
                         to="/profile"
-                        className="flex items-center gap-2 text-lg font-medium hover:text-primary transition-colors"
+                        className="flex items-center gap-2 text-base sm:text-lg font-medium hover:text-primary transition-colors py-2"
                       >
-                        <User className="h-5 w-5" />
-                        My Profile
+                        <User className="h-5 w-5 flex-shrink-0" />
+                        <span>My Profile</span>
                       </Link>
                       {isAdmin && (
                         <Link
                           to="/admin"
-                          className="flex items-center gap-2 text-lg font-medium hover:text-primary transition-colors mt-3"
+                          className="flex items-center gap-2 text-base sm:text-lg font-medium hover:text-primary transition-colors mt-3 py-2"
                         >
-                          <Settings className="h-5 w-5" />
-                          Admin Panel
+                          <Settings className="h-5 w-5 flex-shrink-0" />
+                          <span>Admin Panel</span>
                         </Link>
                       )}
                       <button
                         onClick={signOut}
-                        className="flex items-center gap-2 text-lg font-medium hover:text-primary transition-colors mt-3 text-destructive"
+                        className="flex items-center gap-2 text-base sm:text-lg font-medium hover:text-primary transition-colors mt-3 text-destructive py-2 w-full"
                       >
-                        <LogOut className="h-5 w-5" />
-                        Sign Out
+                        <LogOut className="h-5 w-5 flex-shrink-0" />
+                        <span>Sign Out</span>
                       </button>
                     </>
                   ) : (
                     <Link
                       to="/auth"
-                      className="flex items-center gap-2 text-lg font-medium hover:text-primary transition-colors"
+                      className="flex items-center gap-2 text-base sm:text-lg font-medium hover:text-primary transition-colors py-2"
                     >
-                      <User className="h-5 w-5" />
-                      Sign In / Sign Up
+                      <User className="h-5 w-5 flex-shrink-0" />
+                      <span>Sign In / Sign Up</span>
                     </Link>
                   )}
                 </div>
@@ -138,13 +138,13 @@ export function Header() {
           </Sheet>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+          <Link to="/" className="flex items-center gap-1 sm:gap-2 flex-shrink-0 min-w-0">
             <img 
               src={logoUrl || logo} 
               alt={storeName} 
               className="h-8 md:h-10 w-auto object-contain flex-shrink-0"
             />
-            <span className="font-display text-lg md:text-2xl font-bold text-primary whitespace-nowrap">
+            <span className="font-display text-sm sm:text-lg md:text-2xl font-bold text-primary whitespace-nowrap hidden sm:inline">
               {storeName}
             </span>
           </Link>
@@ -175,21 +175,21 @@ export function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
             {/* Search toggle */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="relative"
+              className="h-9 w-9 sm:h-10 sm:w-10"
             >
-              {isSearchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+              {isSearchOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Search className="h-4 w-4 sm:h-5 sm:w-5" />}
             </Button>
 
             {/* Wishlist */}
             <Link to="/wishlist">
-              <Button variant="ghost" size="icon" className="relative">
-                <Heart className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-10 sm:w-10">
+                <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {wishlistCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
                     {wishlistCount}
@@ -200,8 +200,8 @@ export function Header() {
 
             {/* Cart */}
             <Link to="/cart">
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-10 sm:w-10">
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
                 {cartCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
                     {cartCount}
@@ -214,9 +214,9 @@ export function Header() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="hidden md:flex">
+                  <Button variant="ghost" size="icon" className="hidden md:flex h-10 w-10">
                     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-sm font-medium text-primary">
+                      <span className="text-xs font-medium text-primary">
                         {profile?.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase() || 'U'}
                       </span>
                     </div>
@@ -224,7 +224,7 @@ export function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{profile?.full_name || 'User'}</p>
+                    <p className="text-sm font-medium truncate">{profile?.full_name || 'User'}</p>
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                   </div>
                   <DropdownMenuSeparator />
@@ -248,7 +248,7 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={() => navigate('/auth')}>
+              <Button variant="ghost" size="sm" className="hidden md:flex h-9 text-xs sm:text-sm" onClick={() => navigate('/auth')}>
                 Sign In
               </Button>
             )}
@@ -263,15 +263,15 @@ export function Header() {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="overflow-hidden pb-4"
+              className="overflow-hidden pb-3 sm:pb-4 px-4 sm:px-6 lg:px-8"
             >
               <form onSubmit={handleSearch} className="relative">
                 <Input
                   type="search"
-                  placeholder="Search for furniture, decor, and more..."
+                  placeholder="Search furniture..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pr-12"
+                  className="w-full pr-12 text-sm sm:text-base"
                   autoFocus
                 />
                 <Button

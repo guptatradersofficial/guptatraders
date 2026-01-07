@@ -404,8 +404,8 @@ export default function ProfilePage() {
         url: window.location.href,
         type: 'website',
       }} />
-      <div className="container py-8 max-w-6xl">
-        <h1 className="text-3xl font-display font-bold mb-8">My Account</h1>
+      <div className="container px-4 sm:px-6 lg:px-8 py-8 max-w-6xl w-full max-w-full overflow-hidden">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-8">My Account</h1>
 
         <Tabs defaultValue={defaultTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">

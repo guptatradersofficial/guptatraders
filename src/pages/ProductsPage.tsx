@@ -327,22 +327,22 @@ export default function ProductsPage() {
           type: 'website',
         }}
       />
-      <div className="container py-8">
+      <div className="container py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-display text-3xl md:text-4xl font-bold mb-2"
+            className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-2"
           >
             {searchQuery ? `Search Results for "${searchQuery}"` : 'All Products'}
           </motion.h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             {filteredProducts.length} products found
           </p>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* Desktop Filters */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-32">
@@ -355,7 +355,7 @@ export default function ProductsPage() {
           </aside>
 
           {/* Main content */}
-          <div className="flex-1">
+          <div className="flex-1 w-full max-w-full overflow-hidden">
             {/* Toolbar */}
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
               {/* Mobile filter button */}
